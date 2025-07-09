@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 import AuthForm from '@/components/AuthForm';
 import Navigation from '@/components/Navigation';
 import Dashboard from '@/components/Dashboard';
+import PortfolioManager from '@/components/features/PortfolioManager';
+import BudgetManager from '@/components/features/BudgetManager';
+import SavingsBooster from '@/components/features/SavingsBooster';
 import FeaturePlaceholder from '@/components/FeaturePlaceholder';
 import {
   TrendingUp,
@@ -37,58 +40,13 @@ const Index = () => {
         return <Dashboard />;
       
       case 'portfolio':
-        return (
-          <FeaturePlaceholder
-            title="Portfolio Manager"
-            description="Analyze and optimize your investment portfolio with AI-powered insights"
-            icon={TrendingUp}
-            features={[
-              "Real-time portfolio performance tracking",
-              "Asset allocation analysis and recommendations",
-              "Risk assessment and management tools",
-              "Rebalancing suggestions based on market conditions",
-              "Historical performance comparisons",
-              "Tax-loss harvesting opportunities"
-            ]}
-            comingSoon
-          />
-        );
+        return <PortfolioManager />;
       
       case 'budget':
-        return (
-          <FeaturePlaceholder
-            title="Budget Manager"
-            description="Take control of your spending with intelligent budget tracking and optimization"
-            icon={Wallet}
-            features={[
-              "Automatic transaction categorization",
-              "Monthly budget planning and tracking",
-              "Expense pattern analysis",
-              "Budget leak identification",
-              "Income and expense forecasting",
-              "Custom spending categories"
-            ]}
-            comingSoon
-          />
-        );
+        return <BudgetManager />;
       
       case 'savings':
-        return (
-          <FeaturePlaceholder
-            title="Personal Savings Booster"
-            description="Maximize your savings potential with AI-driven cost optimization"
-            icon={PiggyBank}
-            features={[
-              "Duplicate subscription detection",
-              "Cost-saving opportunity alerts",
-              "Automated savings recommendations",
-              "Expense reduction strategies",
-              "Alternative service suggestions",
-              "Monthly savings progress tracking"
-            ]}
-            comingSoon
-          />
-        );
+        return <SavingsBooster />;
       
       case 'credit':
         return (
