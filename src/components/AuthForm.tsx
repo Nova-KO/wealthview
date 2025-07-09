@@ -130,6 +130,16 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
               </Button>
             </form>
 
+            <div className="mt-4 text-center">
+              <Button
+                variant="outline"
+                onClick={() => onLogin('demo@demo.com', 'demo')}
+                className="w-full mb-4"
+              >
+                Skip for now (Demo Mode)
+              </Button>
+            </div>
+
             <div className="mt-6 text-center">
               <p className="text-sm text-muted-foreground">
                 {isLogin ? "Don't have an account?" : "Already have an account?"}
