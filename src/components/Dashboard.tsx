@@ -6,7 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { 
   TrendingUp, 
   TrendingDown, 
-  DollarSign, 
+  IndianRupee, 
   Target, 
   CreditCard, 
   PiggyBank,
@@ -18,37 +18,37 @@ import {
 
 const Dashboard: React.FC = () => {
   const portfolioData = {
-    totalValue: 125450,
-    change: 2.4,
+    totalValue: 9850000, // ₹98.5 lakhs
+    change: 3.2,
     isPositive: true
   };
 
   const budgetData = {
-    spent: 3240,
-    budget: 4500,
+    spent: 45000, // ₹45,000
+    budget: 65000, // ₹65,000
     categories: [
-      { name: 'Food & Dining', spent: 890, budget: 1200 },
-      { name: 'Transportation', spent: 450, budget: 600 },
-      { name: 'Entertainment', spent: 320, budget: 400 },
-      { name: 'Shopping', spent: 680, budget: 800 }
+      { name: 'Food & Groceries', spent: 12500, budget: 18000 },
+      { name: 'Transportation', spent: 8500, budget: 12000 },
+      { name: 'Entertainment', spent: 6000, budget: 8000 },
+      { name: 'Shopping & Bills', spent: 18000, budget: 27000 }
     ]
   };
 
   const savingsGoals = [
-    { name: 'Emergency Fund', current: 8500, target: 15000, color: 'from-green-400 to-green-600' },
-    { name: 'Vacation', current: 2300, target: 5000, color: 'from-blue-400 to-blue-600' },
-    { name: 'New Car', current: 12000, target: 25000, color: 'from-purple-400 to-purple-600' }
+    { name: 'Emergency Fund', current: 450000, target: 800000, color: 'from-green-400 to-green-600' }, // ₹4.5L to ₹8L
+    { name: 'Goa Trip', current: 85000, target: 150000, color: 'from-blue-400 to-blue-600' }, // ₹85K to ₹1.5L
+    { name: 'New Car (Tata Nexon)', current: 620000, target: 1200000, color: 'from-purple-400 to-purple-600' } // ₹6.2L to ₹12L
   ];
 
-  const creditScore = 745;
-  const creditUtilization = 23;
+  const creditScore = 768; // Good CIBIL score range in India
+  const creditUtilization = 28;
 
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
       <div className="fade-in">
         <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-          Welcome back, Alex! 👋
+          Welcome back, Rajesh! 👋
         </h1>
         <p className="text-muted-foreground mt-2">
           Here's your financial overview for today
@@ -62,7 +62,7 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Portfolio Value</p>
-                <p className="text-2xl font-bold">${portfolioData.totalValue.toLocaleString()}</p>
+                <p className="text-2xl font-bold">₹{(portfolioData.totalValue / 100000).toFixed(1)}L</p>
                 <div className="flex items-center mt-1">
                   {portfolioData.isPositive ? (
                     <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
@@ -86,11 +86,11 @@ const Dashboard: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Monthly Budget</p>
-                <p className="text-2xl font-bold">${budgetData.spent}</p>
-                <p className="text-sm text-muted-foreground">of ${budgetData.budget}</p>
+                <p className="text-2xl font-bold">₹{budgetData.spent.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">of ₹{budgetData.budget.toLocaleString()}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-white" />
+                <IndianRupee className="w-6 h-6 text-white" />
               </div>
             </div>
           </CardContent>
@@ -133,7 +133,7 @@ const Dashboard: React.FC = () => {
         <Card className="widget">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <DollarSign className="w-5 h-5 mr-2 text-primary" />
+              <IndianRupee className="w-5 h-5 mr-2 text-primary" />
               Budget Overview
             </CardTitle>
             <CardDescription>Track your spending across categories</CardDescription>
@@ -145,7 +145,7 @@ const Dashboard: React.FC = () => {
                   <div className="flex justify-between text-sm">
                     <span className="font-medium">{category.name}</span>
                     <span className="text-muted-foreground">
-                      ${category.spent} / ${category.budget}
+                      ₹{category.spent.toLocaleString()} / ₹{category.budget.toLocaleString()}
                     </span>
                   </div>
                   <Progress 
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
                   <div className="flex justify-between text-sm">
                     <span className="font-medium">{goal.name}</span>
                     <span className="text-muted-foreground">
-                      ${goal.current.toLocaleString()} / ${goal.target.toLocaleString()}
+                      ₹{(goal.current / 100000).toFixed(1)}L / ₹{(goal.target / 100000).toFixed(1)}L
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
@@ -213,7 +213,7 @@ const Dashboard: React.FC = () => {
                 <div>
                   <h4 className="font-semibold text-green-800">Optimize Savings</h4>
                   <p className="text-sm text-green-700 mt-1">
-                    Cancel unused Netflix subscription to save $15/month
+                    Cancel unused Hotstar subscription to save ₹1,499/year
                   </p>
                 </div>
               </div>
