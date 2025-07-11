@@ -29,6 +29,7 @@ interface VoiceQuery {
 
 const FloatingVoiceBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [textInput, setTextInput] = useState('');
@@ -271,23 +272,51 @@ const FloatingVoiceBot: React.FC = () => {
     }
   };
 
+  const handleOpen = () => {
+    setIsOpen(true);
+    // Small delay to ensure DOM is ready, then trigger animation
+    setTimeout(() => setIsAnimating(true), 10);
+  };
+
+  const handleClose = () => {
+    setIsAnimating(false);
+    // Delay the actual close to allow animation to complete
+    setTimeout(() => setIsOpen(false), 300);
+  };
+
   return (
     <>
       {/* Floating Button */}
       <div className="fixed bottom-4 right-4 lg:bottom-6 lg:right-6 z-50">
         <Button
-          onClick={() => setIsOpen(true)}
-          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full shadow-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 hover:scale-110"
+          onClick={handleOpen}
+          className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full shadow-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 hover:scale-110 ${
+            isOpen ? 'scale-95 opacity-75' : 'animate-pulse hover:animate-none'
+          }`}
           size="icon"
         >
-          <Mic className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
+          <Mic className={`w-5 h-5 lg:w-6 lg:h-6 text-white transition-transform duration-200 ${
+            isOpen ? '' : 'group-hover:scale-110'
+          }`} />
         </Button>
       </div>
 
       {/* Voice Bot Modal */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-end justify-end p-4 lg:p-6">
-          <Card className="w-full lg:w-96 h-[80vh] lg:h-[500px] glass shadow-2xl flex flex-col">
+        <div 
+          className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-end justify-end p-4 lg:p-6 transition-all duration-300 ${
+            isAnimating ? 'opacity-100' : 'opacity-0'
+          }`}
+          onClick={handleClose}
+        >
+          <Card 
+            className={`w-full lg:w-96 h-[80vh] lg:h-[500px] glass shadow-2xl flex flex-col transform transition-all duration-300 ease-out ${
+              isAnimating 
+                ? 'translate-y-0 translate-x-0 scale-100 opacity-100' 
+                : 'translate-y-8 translate-x-4 lg:translate-x-8 scale-95 opacity-0'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
@@ -302,8 +331,8 @@ const FloatingVoiceBot: React.FC = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={() => setIsOpen(false)}
-                  className="h-8 w-8"
+                  onClick={handleClose}
+                  className="h-8 w-8 hover:bg-red-100 hover:text-red-600 transition-colors duration-200"
                 >
                   <X className="w-4 h-4" />
                 </Button>
@@ -314,23 +343,27 @@ const FloatingVoiceBot: React.FC = () => {
               {/* Conversation Area */}
               <div className="flex-1 overflow-y-auto space-y-3 mb-4">
                 {conversation.length === 0 && (
-                  <div className="text-center text-muted-foreground py-6 lg:py-8">
-                    <Volume2 className="w-6 h-6 lg:w-8 lg:h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">Try asking:</p>
+                  <div className="text-center text-muted-foreground py-6 lg:py-8 animate-in fade-in-50 duration-500">
+                    <Volume2 className="w-6 h-6 lg:w-8 lg:h-8 mx-auto mb-2 opacity-50 animate-pulse" />
+                    <p className="text-sm mb-2">Try asking:</p>
                     <div className="mt-2 space-y-1 text-xs">
-                      <p>"What is my portfolio standing?"</p>
-                      <p>"Show me my budget summary"</p>
-                      <p>"What is my credit score?"</p>
+                      <p className="animate-in slide-in-from-bottom-2 duration-500" style={{animationDelay: '200ms'}}>"What is my portfolio standing?"</p>
+                      <p className="animate-in slide-in-from-bottom-2 duration-500" style={{animationDelay: '400ms'}}>"Show me my budget summary"</p>
+                      <p className="animate-in slide-in-from-bottom-2 duration-500" style={{animationDelay: '600ms'}}>"What is my credit score?"</p>
                     </div>
                   </div>
                 )}
                 
                 {conversation.map((msg, index) => (
-                  <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] lg:max-w-[80%] p-2 lg:p-3 rounded-lg text-xs lg:text-sm ${
+                  <div 
+                    key={index} 
+                    className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <div className={`max-w-[85%] lg:max-w-[80%] p-2 lg:p-3 rounded-lg text-xs lg:text-sm transform transition-all duration-200 hover:scale-[1.02] ${
                       msg.type === 'user' 
-                        ? 'bg-blue-500 text-white' 
-                        : 'bg-gray-100 text-gray-800'
+                        ? 'bg-blue-500 text-white shadow-lg' 
+                        : 'bg-gray-100 text-gray-800 shadow-md'
                     }`}>
                       <p>{msg.message}</p>
                       {msg.data && renderDataVisualization(msg.data, conversation[index-1]?.message.includes('portfolio') ? 'portfolio' : 
@@ -341,8 +374,8 @@ const FloatingVoiceBot: React.FC = () => {
                 ))}
                 
                 {isProcessing && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 text-gray-800 p-3 rounded-lg text-sm">
+                  <div className="flex justify-start animate-in slide-in-from-left-2 duration-300">
+                    <div className="bg-gray-100 text-gray-800 p-3 rounded-lg text-sm shadow-md">
                       <div className="flex items-center space-x-1">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
@@ -359,10 +392,10 @@ const FloatingVoiceBot: React.FC = () => {
                   <Button
                     onClick={handleVoiceInput}
                     disabled={isProcessing}
-                    className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-all duration-300 ${
+                    className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-all duration-300 transform hover:scale-110 active:scale-95 ${
                       isListening 
-                        ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
-                        : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600'
+                        ? 'bg-red-500 hover:bg-red-600 animate-pulse shadow-lg shadow-red-500/50' 
+                        : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-lg shadow-cyan-500/50'
                     }`}
                     size="icon"
                   >
@@ -376,20 +409,20 @@ const FloatingVoiceBot: React.FC = () => {
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleTextSubmit()}
-                    className="flex-1 text-sm"
+                    className="flex-1 text-sm transition-all duration-200 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 hover:border-gray-300"
                   />
                   <Button
                     onClick={handleTextSubmit}
                     size="icon"
                     variant="outline"
-                    className="shrink-0"
+                    className="shrink-0 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600 transition-all duration-200 transform hover:scale-105 active:scale-95"
                   >
                     <Send className="w-4 h-4" />
                   </Button>
                 </div>
                 
                 {isListening && (
-                  <div className="text-center text-sm text-muted-foreground">
+                  <div className="text-center text-sm text-muted-foreground animate-in slide-in-from-bottom-3 duration-300">
                     <div className="flex items-center justify-center space-x-1">
                       <div className="w-1 h-4 bg-cyan-500 rounded animate-pulse"></div>
                       <div className="w-1 h-6 bg-cyan-500 rounded animate-pulse" style={{animationDelay: '0.1s'}}></div>
@@ -397,7 +430,7 @@ const FloatingVoiceBot: React.FC = () => {
                       <div className="w-1 h-5 bg-cyan-500 rounded animate-pulse" style={{animationDelay: '0.3s'}}></div>
                       <div className="w-1 h-2 bg-cyan-500 rounded animate-pulse" style={{animationDelay: '0.4s'}}></div>
                     </div>
-                    <p className="mt-2">Listening...</p>
+                    <p className="mt-2 animate-pulse">Listening...</p>
                   </div>
                 )}
               </div>
