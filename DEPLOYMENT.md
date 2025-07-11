@@ -210,3 +210,54 @@ After successful deployment:
 5. Consider setting up analytics and monitoring
 
 Your Shimmer Finance AI Companion should now be live and connected to Supabase! 🎉 
+
+## 🔧 Fix in Vercel Dashboard:
+
+### Step 1: Remove the Current Environment Variables
+1. Go to your project in **Vercel Dashboard**
+2. Navigate to **Settings** → **Environment Variables**
+3. **Delete** the current variables that reference `@supabase-url` and `@supabase-anon-key`
+
+### Step 2: Add New Environment Variables with Direct Values
+
+Click **"Add New"** and create these two variables:
+
+```
+<code_block_to_apply_changes_from>
+Name: VITE_SUPABASE_URL
+Value: [paste your actual Supabase URL here]
+Environment: Production, Preview, Development
+
+Name: VITE_SUPABASE_ANON_KEY  
+Value: [paste your actual Supabase anon key here]
+Environment: Production, Preview, Development
+```
+
+### Step 3: Get Your Supabase Values
+
+If you don't have your Supabase values yet:
+
+1. **Go to [supabase.com](https://supabase.com)**
+2. **Open your project** (or create one if needed)
+3. **Go to Settings** → **API**
+4. **Copy**:
+   - **Project URL** (looks like: `https://abc123.supabase.co`)
+   - **Project API Keys** → **anon** **public** key
+
+### Step 4: Redeploy
+
+After updating the environment variables:
+1. Go to **Deployments** tab
+2. Click **"Redeploy"** on the latest deployment
+3. Or push a new commit to trigger automatic deployment
+
+## 📋 Example Values Format:
+
+```
+VITE_SUPABASE_URL = https://xyzabc123.supabase.co
+VITE_SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5emFiYzEyMyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNjc5...
+```
+
+This approach avoids the secret references and directly provides the values Vercel needs. Once you fix the environment variables, your deployment should complete successfully! 
+
+Let me know if you need help getting your Supabase credentials. 

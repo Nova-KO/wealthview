@@ -94,7 +94,7 @@ const Index = () => {
         onLogout={handleLogout}
       />
       
-      <main className="ml-20 p-6">
+      <main className="lg:ml-20 p-4 lg:p-6 pt-20 lg:pt-6">
         <div className="max-w-7xl mx-auto">
           {renderContent()}
         </div>

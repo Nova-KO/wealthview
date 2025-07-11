@@ -274,29 +274,29 @@ const FloatingVoiceBot: React.FC = () => {
   return (
     <>
       {/* Floating Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 right-4 lg:bottom-6 lg:right-6 z-50">
         <Button
           onClick={() => setIsOpen(true)}
-          className="w-14 h-14 rounded-full shadow-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 hover:scale-110"
+          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full shadow-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 hover:scale-110"
           size="icon"
         >
-          <Mic className="w-6 h-6 text-white" />
+          <Mic className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
         </Button>
       </div>
 
       {/* Voice Bot Modal */}
       {isOpen && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-end justify-end p-6">
-          <Card className="w-96 h-[500px] glass shadow-2xl flex flex-col">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-end justify-end p-4 lg:p-6">
+          <Card className="w-full lg:w-96 h-[80vh] lg:h-[500px] glass shadow-2xl flex flex-col">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center mr-3">
-                    <Mic className="w-5 h-5 text-white" />
+                  <div className="w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center mr-3">
+                    <Mic className="w-4 h-4 lg:w-5 lg:h-5 text-white" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg">Voice Assistant</CardTitle>
-                    <CardDescription>Ask about your finances</CardDescription>
+                    <CardTitle className="text-base lg:text-lg">Voice Assistant</CardTitle>
+                    <CardDescription className="text-sm">Ask about your finances</CardDescription>
                   </div>
                 </div>
                 <Button
@@ -310,12 +310,12 @@ const FloatingVoiceBot: React.FC = () => {
               </div>
             </CardHeader>
 
-            <CardContent className="flex-1 flex flex-col p-4">
+            <CardContent className="flex-1 flex flex-col p-3 lg:p-4">
               {/* Conversation Area */}
               <div className="flex-1 overflow-y-auto space-y-3 mb-4">
                 {conversation.length === 0 && (
-                  <div className="text-center text-muted-foreground py-8">
-                    <Volume2 className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                  <div className="text-center text-muted-foreground py-6 lg:py-8">
+                    <Volume2 className="w-6 h-6 lg:w-8 lg:h-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">Try asking:</p>
                     <div className="mt-2 space-y-1 text-xs">
                       <p>"What is my portfolio standing?"</p>
@@ -327,7 +327,7 @@ const FloatingVoiceBot: React.FC = () => {
                 
                 {conversation.map((msg, index) => (
                   <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] p-3 rounded-lg text-sm ${
+                    <div className={`max-w-[85%] lg:max-w-[80%] p-2 lg:p-3 rounded-lg text-xs lg:text-sm ${
                       msg.type === 'user' 
                         ? 'bg-blue-500 text-white' 
                         : 'bg-gray-100 text-gray-800'
@@ -359,14 +359,14 @@ const FloatingVoiceBot: React.FC = () => {
                   <Button
                     onClick={handleVoiceInput}
                     disabled={isProcessing}
-                    className={`w-12 h-12 rounded-full transition-all duration-300 ${
+                    className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-all duration-300 ${
                       isListening 
                         ? 'bg-red-500 hover:bg-red-600 animate-pulse' 
                         : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600'
                     }`}
                     size="icon"
                   >
-                    {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                    {isListening ? <MicOff className="w-4 h-4 lg:w-5 lg:h-5" /> : <Mic className="w-4 h-4 lg:w-5 lg:h-5" />}
                   </Button>
                 </div>
                 
@@ -376,12 +376,13 @@ const FloatingVoiceBot: React.FC = () => {
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleTextSubmit()}
-                    className="flex-1"
+                    className="flex-1 text-sm"
                   />
                   <Button
                     onClick={handleTextSubmit}
                     size="icon"
                     variant="outline"
+                    className="shrink-0"
                   >
                     <Send className="w-4 h-4" />
                   </Button>

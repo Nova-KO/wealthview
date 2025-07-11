@@ -53,21 +53,21 @@ const Dashboard: React.FC = () => {
           <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-blue-400/10 to-cyan-400/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-purple-400/10 to-pink-400/10 rounded-full blur-3xl translate-y-24 -translate-x-24"></div>
           
-          <CardContent className="p-8 relative z-10">
-            <div className="flex items-center justify-between">
+          <CardContent className="p-4 lg:p-8 relative z-10">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
               <div className="space-y-4">
                 <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
-                    <span className="text-2xl font-bold text-white">A</span>
+                  <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
+                    <span className="text-lg lg:text-2xl font-bold text-white">A</span>
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-cyan-600 bg-clip-text text-transparent">
+                    <h1 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-cyan-600 bg-clip-text text-transparent">
                       Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, Anjali! 
                       <span className="ml-2">
                         {new Date().getHours() < 12 ? '🌅' : new Date().getHours() < 17 ? '☀️' : '🌙'}
                       </span>
                     </h1>
-                    <p className="text-lg text-muted-foreground mt-1">
+                    <p className="text-sm lg:text-lg text-muted-foreground mt-1">
                       {new Date().toLocaleDateString('en-IN', { 
                         weekday: 'long', 
                         year: 'numeric', 
@@ -78,29 +78,29 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-6 mt-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0 mt-4">
                   <div className="flex items-center space-x-2">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-medium text-green-700">Portfolio growing strong</span>
+                    <span className="text-xs lg:text-sm font-medium text-green-700">Portfolio growing strong</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-4 h-4 text-blue-500" />
-                    <span className="text-sm font-medium text-blue-700">3 goals on track</span>
+                    <CheckCircle className="w-3 h-3 lg:w-4 lg:h-4 text-blue-500" />
+                    <span className="text-xs lg:text-sm font-medium text-blue-700">3 goals on track</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Target className="w-4 h-4 text-purple-500" />
-                    <span className="text-sm font-medium text-purple-700">₹2.4K savings this month</span>
+                    <Target className="w-3 h-3 lg:w-4 lg:h-4 text-purple-500" />
+                    <span className="text-xs lg:text-sm font-medium text-purple-700">₹2.4K savings this month</span>
                   </div>
                 </div>
               </div>
               
-              <div className="text-right space-y-2">
-                <div className="text-right">
+              <div className="lg:text-right space-y-2">
+                <div className="lg:text-right">
                   <p className="text-sm text-muted-foreground">Net Worth</p>
-                  <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                  <p className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                     ₹{(portfolioData.totalValue / 100000).toFixed(1)}L
                   </p>
-                  <div className="flex items-center justify-end mt-1">
+                  <div className="flex items-center lg:justify-end mt-1">
                     <ArrowUpRight className="w-4 h-4 text-green-500 mr-1" />
                     <span className="text-sm font-medium text-green-600">+₹15.2K today</span>
                   </div>
@@ -123,9 +123,9 @@ const Dashboard: React.FC = () => {
             
             {/* Quick Action Bar */}
             <div className="mt-6 pt-6 border-t border-white/20">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
                 <p className="text-sm font-medium text-muted-foreground">Quick Actions</p>
-                <div className="flex space-x-3">
+                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
                   <Button size="sm" variant="outline" className="bg-white/50 border-white/30 hover:bg-white/70">
                     💰 Add Income
                   </Button>
@@ -145,11 +145,11 @@ const Dashboard: React.FC = () => {
       {/* Key Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 slide-up">
         <Card className="widget">
-          <CardContent className="p-6">
+          <CardContent className="p-4 lg:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Portfolio Value</p>
-                <p className="text-2xl font-bold">₹{(portfolioData.totalValue / 100000).toFixed(1)}L</p>
+                <p className="text-xl lg:text-2xl font-bold">₹{(portfolioData.totalValue / 100000).toFixed(1)}L</p>
                 <div className="flex items-center mt-1">
                   {portfolioData.isPositive ? (
                     <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
@@ -161,53 +161,53 @@ const Dashboard: React.FC = () => {
                   </span>
                 </div>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="widget">
-          <CardContent className="p-6">
+          <CardContent className="p-4 lg:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Monthly Budget</p>
-                <p className="text-2xl font-bold">₹{budgetData.spent.toLocaleString()}</p>
+                <p className="text-xl lg:text-2xl font-bold">₹{budgetData.spent.toLocaleString()}</p>
                 <p className="text-sm text-muted-foreground">of ₹{budgetData.budget.toLocaleString()}</p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                <Wallet className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
+                <Wallet className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="widget">
-          <CardContent className="p-6">
+          <CardContent className="p-4 lg:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Credit Score</p>
-                <p className="text-2xl font-bold">{creditScore}</p>
+                <p className="text-xl lg:text-2xl font-bold">{creditScore}</p>
                 <p className="text-sm text-green-500">Excellent</p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
+                <CreditCard className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card className="widget">
-          <CardContent className="p-6">
+          <CardContent className="p-4 lg:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Savings Rate</p>
-                <p className="text-2xl font-bold">28%</p>
+                <p className="text-xl lg:text-2xl font-bold">28%</p>
                 <p className="text-sm text-green-500">Above target</p>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
-                <PiggyBank className="w-6 h-6 text-white" />
+              <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-br from-cyan-400 to-cyan-600 flex items-center justify-center">
+                <PiggyBank className="w-5 h-5 lg:w-6 lg:h-6 text-white" />
               </div>
             </div>
           </CardContent>
@@ -215,7 +215,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
         {/* Budget Overview */}
         <Card className="widget">
           <CardHeader>
@@ -293,7 +293,7 @@ const Dashboard: React.FC = () => {
           <CardDescription>Personalized insights to improve your financial health</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="p-4 rounded-lg bg-green-50 border border-green-200">
               <div className="flex items-start">
                 <ArrowUpRight className="w-5 h-5 text-green-600 mr-2 mt-0.5" />

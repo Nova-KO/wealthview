@@ -30,32 +30,32 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-100">
+    <div className="min-h-screen flex items-center justify-center p-4 lg:p-8 bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-100">
       {/* Background decoration */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-blue-400/20 to-cyan-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 w-60 h-60 lg:w-80 lg:h-80 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 w-60 h-60 lg:w-80 lg:h-80 bg-gradient-to-tr from-blue-400/20 to-cyan-500/20 rounded-full blur-3xl"></div>
       </div>
 
       <div className="w-full max-w-md relative z-10">
         {/* Logo and branding */}
-        <div className="text-center mb-8 fade-in">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl gradient-primary mb-4 shadow-lg">
-            <DollarSign className="w-8 h-8 text-white" />
+        <div className="text-center mb-6 lg:mb-8 fade-in">
+          <div className="inline-flex items-center justify-center w-14 h-14 lg:w-16 lg:h-16 rounded-2xl gradient-primary mb-4 shadow-lg">
+            <DollarSign className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
             AI Money Companion
           </h1>
-          <p className="text-muted-foreground mt-2">Your intelligent financial assistant</p>
+          <p className="text-sm lg:text-base text-muted-foreground mt-2">Your intelligent financial assistant</p>
         </div>
 
         {/* Auth form */}
         <Card className="glass-card slide-up">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold">
+            <CardTitle className="text-xl lg:text-2xl font-bold">
               {isLogin ? 'Welcome Back' : 'Get Started'}
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-sm lg:text-base">
               {isLogin 
                 ? 'Sign in to access your financial dashboard' 
                 : 'Create your account to begin your financial journey'
@@ -156,17 +156,17 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
         </Card>
 
         {/* Features preview */}
-        <div className="grid grid-cols-3 gap-4 mt-8 fade-in">
-          <div className="glass-card text-center p-4">
-            <Shield className="w-6 h-6 text-primary mx-auto mb-2" />
+        <div className="grid grid-cols-3 gap-2 lg:gap-4 mt-6 lg:mt-8 fade-in">
+          <div className="glass-card text-center p-3 lg:p-4">
+            <Shield className="w-5 h-5 lg:w-6 lg:h-6 text-primary mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">Secure & Encrypted</p>
           </div>
-          <div className="glass-card text-center p-4">
-            <TrendingUp className="w-6 h-6 text-primary mx-auto mb-2" />
+          <div className="glass-card text-center p-3 lg:p-4">
+            <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-primary mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">Smart Analytics</p>
           </div>
-          <div className="glass-card text-center p-4">
-            <DollarSign className="w-6 h-6 text-primary mx-auto mb-2" />
+          <div className="glass-card text-center p-3 lg:p-4">
+            <DollarSign className="w-5 h-5 lg:w-6 lg:h-6 text-primary mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">AI Recommendations</p>
           </div>
         </div>

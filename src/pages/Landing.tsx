@@ -230,13 +230,13 @@ const Landing: React.FC = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-6">
-          <Badge className="mb-6 bg-white/20 border-white/30 text-primary backdrop-blur-sm">
-            <Star className="w-4 h-4 mr-2" />
+        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 lg:px-6">
+          <Badge className="mb-4 lg:mb-6 bg-white/20 border-white/30 text-primary backdrop-blur-sm text-sm">
+            <Star className="w-3 h-3 lg:w-4 lg:h-4 mr-2" />
             India's #1 AI Financial Assistant
           </Badge>
           
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
             Your Money,
             <br />
             <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -244,36 +244,36 @@ const Landing: React.FC = () => {
             </span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-muted-foreground mb-6 lg:mb-8 max-w-3xl mx-auto leading-relaxed">
             Transform your financial future with intelligent insights, automated savings, 
             and personalized investment strategies designed for Indian investors.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center items-center mb-8 lg:mb-12">
             <Button 
               size="lg" 
-              className="text-lg px-8 py-6 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+              className="w-full sm:w-auto text-base lg:text-lg px-6 lg:px-8 py-4 lg:py-6 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               onClick={() => navigate('/app')}
             >
               Start Your Journey
-              <ArrowRight className="ml-2 w-5 h-5" />
+              <ArrowRight className="ml-2 w-4 h-4 lg:w-5 lg:h-5" />
             </Button>
             
             <Button 
               variant="outline" 
               size="lg" 
-              className="text-lg px-8 py-6 bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/30 transition-all duration-300"
+              className="w-full sm:w-auto text-base lg:text-lg px-6 lg:px-8 py-4 lg:py-6 bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/30 transition-all duration-300"
             >
               Watch Demo
             </Button>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-2xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-2xl mx-auto">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 lg:mb-2">{stat.value}</div>
+                <div className="text-xs lg:text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -281,39 +281,41 @@ const Landing: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 px-6 relative z-10">
+      <section className="py-12 lg:py-20 px-4 lg:px-6 relative z-10">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
               Complete Financial Management Suite
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
+            <p className="text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 lg:mb-8">
               Discover how AI can revolutionize your relationship with money
             </p>
             
             {/* Available Features Highlight */}
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 mb-12 border border-green-200">
-              <div className="flex items-center justify-center mb-4">
-                <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
-                <span className="text-lg font-semibold text-green-800">Now Available</span>
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-4 lg:p-6 mb-8 lg:mb-12 border border-green-200">
+              <div className="flex items-center justify-center mb-3 lg:mb-4">
+                <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-green-600 mr-2" />
+                <span className="text-base lg:text-lg font-semibold text-green-800">Now Available</span>
               </div>
-              <p className="text-green-700">
+              <p className="text-sm lg:text-base text-green-700">
                 <strong>Portfolio Manager, Budget Tracker & Savings Booster</strong> are live and ready to transform your finances!
               </p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             {features.map((feature, index) => (
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-white/20 relative">
-                <CardHeader>
+                <CardHeader className="p-4 lg:p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <div className={`w-16 h-16 rounded-xl ${
+                    <div className={`w-12 h-12 lg:w-16 lg:h-16 rounded-xl ${
                       feature.status === 'available' 
                         ? 'bg-gradient-to-br from-cyan-400 to-blue-600' 
                         : 'bg-gradient-to-br from-gray-400 to-gray-600'
                     } flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
-                      {feature.icon}
+                      <div className="scale-75 lg:scale-100">
+                        {feature.icon}
+                      </div>
                     </div>
                     <Badge 
                       variant={feature.status === 'available' ? 'default' : 'secondary'}
@@ -335,10 +337,10 @@ const Landing: React.FC = () => {
                       )}
                     </Badge>
                   </div>
-                  <CardTitle className="text-xl mb-2">{feature.title}</CardTitle>
+                  <CardTitle className="text-lg lg:text-xl mb-2">{feature.title}</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-base leading-relaxed">
+                <CardContent className="p-4 lg:p-6 pt-0">
+                  <CardDescription className="text-sm lg:text-base leading-relaxed">
                     {feature.description}
                   </CardDescription>
                   {feature.status === 'available' && (

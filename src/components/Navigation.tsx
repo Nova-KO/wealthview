@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
   TrendingUp, 
@@ -10,7 +10,9 @@ import {
   Shield,
   Target,
   Settings,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from 'lucide-react';
 
 interface NavigationProps {
@@ -35,8 +37,34 @@ const Navigation: React.FC<NavigationProps> = ({
   onSectionChange, 
   onLogout 
 }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   return (
-    <div className="fixed left-0 top-0 h-full w-20 glass border-r border-glass-border z-50 flex flex-col">
+    <>
+      {/* Mobile Navigation Toggle */}
+      <button
+        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        className="fixed top-4 left-4 z-[60] lg:hidden w-12 h-12 rounded-xl glass border border-glass-border flex items-center justify-center"
+      >
+        {isMobileMenuOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <Menu className="w-6 h-6" />
+        )}
+      </button>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Navigation Sidebar */}
+      <div className={`fixed left-0 top-0 h-full w-20 lg:w-20 glass border-r border-glass-border z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${
+        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
       {/* Logo */}
       <div className="flex items-center justify-center h-20 border-b border-glass-border">
         <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg">
@@ -65,7 +93,10 @@ const Navigation: React.FC<NavigationProps> = ({
           {navigationItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => onSectionChange(item.id)}
+              onClick={() => {
+                onSectionChange(item.id);
+                setIsMobileMenuOpen(false);
+              }}
               className={`nav-icon group relative ${
                 activeSection === item.id ? 'active' : ''
               }`}
@@ -86,7 +117,10 @@ const Navigation: React.FC<NavigationProps> = ({
       {/* Bottom actions */}
       <div className="p-3 border-t border-glass-border space-y-3">
         <button
-          onClick={() => onSectionChange('settings')}
+          onClick={() => {
+            onSectionChange('settings');
+            setIsMobileMenuOpen(false);
+          }}
           className={`nav-icon ${activeSection === 'settings' ? 'active' : ''}`}
           title="Settings"
         >
@@ -94,7 +128,10 @@ const Navigation: React.FC<NavigationProps> = ({
         </button>
         
         <button
-          onClick={onLogout}
+          onClick={() => {
+            onLogout();
+            setIsMobileMenuOpen(false);
+          }}
           className="nav-icon hover:bg-red-500/20 hover:text-red-500"
           title="Logout"
         >
@@ -102,6 +139,7 @@ const Navigation: React.FC<NavigationProps> = ({
         </button>
       </div>
     </div>
+    </>
   );
 };
 
