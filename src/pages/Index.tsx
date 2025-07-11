@@ -6,6 +6,12 @@ import Dashboard from '@/components/Dashboard';
 import PortfolioManager from '@/components/features/PortfolioManager';
 import BudgetManager from '@/components/features/BudgetManager';
 import SavingsBooster from '@/components/features/SavingsBooster';
+import CreditManager from '@/components/features/CreditManager';
+import CommitmentAdvisor from '@/components/features/CommitmentAdvisor';
+import InsuranceAdvisor from '@/components/features/InsuranceAdvisor';
+import GoalPlanning from '@/components/features/GoalPlanning';
+import Settings from '@/components/features/Settings';
+import FloatingVoiceBot from '@/components/FloatingVoiceBot';
 import FeaturePlaceholder from '@/components/FeaturePlaceholder';
 import {
   TrendingUp,
@@ -15,8 +21,7 @@ import {
   Calendar,
   Shield,
   Target,
-  Mic,
-  Settings
+  Settings as SettingsIcon
 } from 'lucide-react';
 
 const Index = () => {
@@ -49,112 +54,21 @@ const Index = () => {
         return <SavingsBooster />;
       
       case 'credit':
-        return (
-          <FeaturePlaceholder
-            title="AI Credit Slashing System"
-            description="Optimize your credit health with intelligent payment strategies"
-            icon={CreditCard}
-            features={[
-              "Credit score monitoring and improvement tips",
-              "Payment strategy optimization",
-              "Credit utilization analysis",
-              "Fee avoidance recommendations",
-              "Credit card comparison and suggestions",
-              "Debt payoff planning"
-            ]}
-            comingSoon
-          />
-        );
+        return <CreditManager />;
       
       case 'commitments':
-        return (
-          <FeaturePlaceholder
-            title="Commitment Recommendation System"
-            description="Make informed decisions about major financial commitments"
-            icon={Calendar}
-            features={[
-              "Financial readiness assessment",
-              "Optimal timing recommendations",
-              "Affordability analysis",
-              "Risk evaluation for major purchases",
-              "Emergency fund impact assessment",
-              "Long-term financial planning"
-            ]}
-            comingSoon
-          />
-        );
+        return <CommitmentAdvisor />;
       
       case 'insurance':
-        return (
-          <FeaturePlaceholder
-            title="Health Insurance Advisor"
-            description="Find the perfect insurance coverage for your needs and budget"
-            icon={Shield}
-            features={[
-              "Personalized insurance recommendations",
-              "Coverage gap analysis",
-              "Premium comparison across providers",
-              "Health and term insurance planning",
-              "Emergency fund backup strategies",
-              "Policy renewal optimization"
-            ]}
-            comingSoon
-          />
-        );
+        return <InsuranceAdvisor />;
       
       case 'goals':
-        return (
-          <FeaturePlaceholder
-            title="AI Jar (Goal Planning)"
-            description="Achieve your financial dreams with intelligent goal planning and tracking"
-            icon={Target}
-            features={[
-              "Smart goal setting and tracking",
-              "Step-by-step achievement plans",
-              "Progress monitoring and adjustments",
-              "Milestone celebration system",
-              "Goal priority optimization",
-              "Timeline and budget planning"
-            ]}
-            comingSoon
-          />
-        );
+        return <GoalPlanning />;
       
-      case 'voice':
-        return (
-          <FeaturePlaceholder
-            title="Voice Bot Assistant"
-            description="Access your financial information hands-free with voice commands"
-            icon={Mic}
-            features={[
-              "Voice-activated financial queries",
-              "Personalized voice recognition",
-              "Hands-free account summaries",
-              "Spoken alerts and notifications",
-              "Voice-controlled transaction searches",
-              "Natural language financial insights"
-            ]}
-            comingSoon
-          />
-        );
+
       
       case 'settings':
-        return (
-          <FeaturePlaceholder
-            title="Settings & Preferences"
-            description="Customize your AI Money Companion experience"
-            icon={Settings}
-            features={[
-              "Account and profile management",
-              "Privacy and security settings",
-              "Notification preferences",
-              "Data export and backup options",
-              "Integration with financial institutions",
-              "Personalization and themes"
-            ]}
-            comingSoon
-          />
-        );
+        return <Settings />;
       
       default:
         return <Dashboard />;
@@ -185,6 +99,9 @@ const Index = () => {
           {renderContent()}
         </div>
       </main>
+
+      {/* Floating Voice Bot */}
+      <FloatingVoiceBot />
     </div>
   );
 };

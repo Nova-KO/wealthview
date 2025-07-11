@@ -1,4 +1,4 @@
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense, useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, OrbitControls, Sphere, Box, Torus, Text3D, Center, Environment } from '@react-three/drei';
 import { Button } from '@/components/ui/button';
@@ -16,18 +16,50 @@ import {
   Star,
   Users,
   BarChart3,
-  Brain
+  Brain,
+  Clock
 } from 'lucide-react';
 import * as THREE from 'three';
+
+// Error Boundary Component
+class Scene3DErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): { hasError: boolean } {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.warn('3D Scene Error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+
+    return this.props.children;
+  }
+}
 
 // 3D Scene Components
 const FloatingCoin = ({ position }: { position: [number, number, number] }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.5;
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
+    try {
+      if (meshRef.current) {
+        meshRef.current.rotation.y = state.clock.elapsedTime * 0.5;
+        meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
+      }
+    } catch (error) {
+      console.warn('FloatingCoin animation error:', error);
     }
   });
 
@@ -45,10 +77,14 @@ const AnimatedSphere = ({ position, color }: { position: [number, number, number
   const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime) * 0.2;
-      meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
-      meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
+    try {
+      if (meshRef.current) {
+        meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime) * 0.2;
+        meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
+        meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
+      }
+    } catch (error) {
+      console.warn('AnimatedSphere animation error:', error);
     }
   });
 
@@ -61,31 +97,43 @@ const AnimatedSphere = ({ position, color }: { position: [number, number, number
 };
 
 const Scene3D = () => {
-  return (
-    <>
-      <Environment preset="city" />
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
-      
-      {/* Floating Elements */}
-      <FloatingCoin position={[-2, 1, 0]} />
-      <FloatingCoin position={[2, -1, 0]} />
-      <FloatingCoin position={[0, 2, -1]} />
-      
-      <AnimatedSphere position={[-3, 0, -1]} color="#22d3ee" />
-      <AnimatedSphere position={[3, 1, -1]} color="#3b82f6" />
-      <AnimatedSphere position={[0, -2, -1]} color="#8b5cf6" />
-      
-      {/* Central rotating torus */}
-      <Float speed={1} rotationIntensity={2}>
-        <Torus args={[1.5, 0.3, 16, 100]} position={[0, 0, -2]}>
-          <meshStandardMaterial color="#06b6d4" transparent opacity={0.6} />
-        </Torus>
-      </Float>
-      
-      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-    </>
-  );
+  try {
+    return (
+      <>
+        <ambientLight intensity={0.5} />
+        <directionalLight position={[10, 10, 5]} intensity={1} />
+        
+        {/* Floating Elements */}
+        <FloatingCoin position={[-2, 1, 0]} />
+        <FloatingCoin position={[2, -1, 0]} />
+        <FloatingCoin position={[0, 2, -1]} />
+        
+        <AnimatedSphere position={[-3, 0, -1]} color="#22d3ee" />
+        <AnimatedSphere position={[3, 1, -1]} color="#3b82f6" />
+        <AnimatedSphere position={[0, -2, -1]} color="#8b5cf6" />
+        
+        {/* Central rotating torus */}
+        <Float speed={1} rotationIntensity={2}>
+          <Torus args={[1.5, 0.3, 16, 100]} position={[0, 0, -2]}>
+            <meshStandardMaterial color="#06b6d4" transparent opacity={0.6} />
+          </Torus>
+        </Float>
+        
+        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+      </>
+    );
+  } catch (error) {
+    console.warn('Scene3D render error:', error);
+    return (
+      <>
+        <ambientLight intensity={0.5} />
+        <mesh>
+          <sphereGeometry args={[1, 32, 32]} />
+          <meshBasicMaterial color="#06b6d4" transparent opacity={0.3} />
+        </mesh>
+      </>
+    );
+  }
 };
 
 const Landing: React.FC = () => {
@@ -93,34 +141,52 @@ const Landing: React.FC = () => {
 
   const features = [
     {
-      icon: <Brain className="w-8 h-8" />,
-      title: "AI-Powered Insights",
-      description: "Get personalized financial recommendations powered by advanced AI algorithms"
-    },
-    {
       icon: <TrendingUp className="w-8 h-8" />,
-      title: "Portfolio Management",
-      description: "Optimize your investments with real-time analysis and smart rebalancing"
+      title: "Portfolio Manager",
+      description: "Analyze and optimize your investment portfolio with AI-powered insights. Track stocks, mutual funds, and get rebalancing recommendations.",
+      status: "available"
     },
     {
-      icon: <Shield className="w-8 h-8" />,
-      title: "Bank-Level Security",
-      description: "Your financial data is protected with enterprise-grade encryption"
-    },
-    {
-      icon: <Target className="w-8 h-8" />,
-      title: "Goal Planning",
-      description: "Set and achieve your financial goals with intelligent planning tools"
-    },
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Instant Insights",
-      description: "Get real-time updates and alerts about your financial health"
+      icon: <DollarSign className="w-8 h-8" />,
+      title: "Budget Manager",
+      description: "Take control of your spending with intelligent budget tracking. Monitor expenses, set category limits, and get spending insights.",
+      status: "available"
     },
     {
       icon: <BarChart3 className="w-8 h-8" />,
-      title: "Smart Analytics",
-      description: "Visualize your spending patterns and discover saving opportunities"
+      title: "Savings Booster",
+      description: "Maximize your savings potential with AI-driven cost optimization. Find duplicate subscriptions and money-saving opportunities.",
+      status: "available"
+    },
+    {
+      icon: <CheckCircle className="w-8 h-8" />,
+      title: "Credit Manager",
+      description: "Optimize your credit health with intelligent payment strategies. Monitor CIBIL score and get improvement recommendations.",
+      status: "coming-soon"
+    },
+    {
+      icon: <Shield className="w-8 h-8" />,
+      title: "Insurance Advisor",
+      description: "Find the perfect insurance coverage for your needs. Get personalized recommendations and policy comparisons.",
+      status: "coming-soon"
+    },
+    {
+      icon: <Target className="w-8 h-8" />,
+      title: "AI Jar (Goal Planning)",
+      description: "Achieve your financial dreams with intelligent goal planning. Set targets, track progress, and get step-by-step guidance.",
+      status: "coming-soon"
+    },
+    {
+      icon: <Brain className="w-8 h-8" />,
+      title: "Voice Bot Assistant",
+      description: "Access your financial information hands-free with voice commands. Get spoken insights and natural language queries.",
+      status: "coming-soon"
+    },
+    {
+      icon: <Zap className="w-8 h-8" />,
+      title: "Commitment Advisor",
+      description: "Make informed decisions about major financial commitments. Get timing recommendations and affordability analysis.",
+      status: "coming-soon"
     }
   ];
 
@@ -137,11 +203,24 @@ const Landing: React.FC = () => {
       <section className="relative min-h-screen flex items-center justify-center">
         {/* 3D Background */}
         <div className="absolute inset-0 z-0">
-          <Canvas camera={{ position: [0, 0, 5], fov: 75 }}>
-            <Suspense fallback={null}>
-              <Scene3D />
-            </Suspense>
-          </Canvas>
+          <Scene3DErrorBoundary 
+            fallback={
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-100/50 via-blue-100/50 to-purple-100/50">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1)_0%,transparent_50%)]"></div>
+              </div>
+            }
+          >
+            <Canvas camera={{ position: [0, 0, 5], fov: 75 }} gl={{ antialias: true, alpha: true }}>
+              <Suspense fallback={
+                <mesh>
+                  <sphereGeometry args={[0.5, 32, 32]} />
+                  <meshBasicMaterial color="#06b6d4" transparent opacity={0.3} />
+                </mesh>
+              }>
+                <Scene3D />
+              </Suspense>
+            </Canvas>
+          </Scene3DErrorBoundary>
         </div>
 
         {/* Background decorations */}
@@ -206,19 +285,55 @@ const Landing: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-              Intelligent Financial Features
+              Complete Financial Management Suite
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
               Discover how AI can revolutionize your relationship with money
             </p>
+            
+            {/* Available Features Highlight */}
+            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-6 mb-12 border border-green-200">
+              <div className="flex items-center justify-center mb-4">
+                <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
+                <span className="text-lg font-semibold text-green-800">Now Available</span>
+              </div>
+              <p className="text-green-700">
+                <strong>Portfolio Manager, Budget Tracker & Savings Booster</strong> are live and ready to transform your finances!
+              </p>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-white/20">
+              <Card key={index} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-white/20 relative">
                 <CardHeader>
-                  <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300">
-                    {feature.icon}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`w-16 h-16 rounded-xl ${
+                      feature.status === 'available' 
+                        ? 'bg-gradient-to-br from-cyan-400 to-blue-600' 
+                        : 'bg-gradient-to-br from-gray-400 to-gray-600'
+                    } flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
+                      {feature.icon}
+                    </div>
+                    <Badge 
+                      variant={feature.status === 'available' ? 'default' : 'secondary'}
+                      className={feature.status === 'available' 
+                        ? 'bg-green-100 text-green-700 border-green-200' 
+                        : 'bg-orange-100 text-orange-700 border-orange-200'
+                      }
+                    >
+                      {feature.status === 'available' ? (
+                        <>
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          Available
+                        </>
+                      ) : (
+                        <>
+                          <Clock className="w-3 h-3 mr-1" />
+                          Coming Soon
+                        </>
+                      )}
+                    </Badge>
                   </div>
                   <CardTitle className="text-xl mb-2">{feature.title}</CardTitle>
                 </CardHeader>
@@ -226,6 +341,17 @@ const Landing: React.FC = () => {
                   <CardDescription className="text-base leading-relaxed">
                     {feature.description}
                   </CardDescription>
+                  {feature.status === 'available' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="mt-4 w-full"
+                      onClick={() => navigate('/app')}
+                    >
+                      Try Now
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -239,11 +365,28 @@ const Landing: React.FC = () => {
           <Card className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border-none shadow-2xl">
             <CardContent className="p-12">
               <h3 className="text-4xl font-bold mb-6">
-                Ready to Transform Your Finances?
+                Start Managing Your Money Smarter Today
               </h3>
-              <p className="text-xl mb-8 opacity-90">
-                Join thousands of Indians who are already using AI to build wealth smarter.
+              <p className="text-xl mb-6 opacity-90">
+                Get instant access to Portfolio Management, Budget Tracking, and Savings Optimization
               </p>
+              
+              {/* Feature Pills */}
+              <div className="flex flex-wrap justify-center gap-3 mb-8">
+                <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm">
+                  <TrendingUp className="w-4 h-4 mr-2" />
+                  Track Investments
+                </Badge>
+                <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm">
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Monitor Budget
+                </Badge>
+                <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm">
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Boost Savings
+                </Badge>
+              </div>
+              
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button 
                   size="lg" 
@@ -251,10 +394,14 @@ const Landing: React.FC = () => {
                   className="text-lg px-8 py-6 bg-white text-primary hover:bg-gray-100"
                   onClick={() => navigate('/app')}
                 >
-                  Get Started Free
+                  Start Free Trial
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </div>
+              
+              <p className="text-sm opacity-75 mt-4">
+                No credit card required • Full access to available features • More coming soon
+              </p>
             </CardContent>
           </Card>
         </div>

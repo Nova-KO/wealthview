@@ -9,7 +9,6 @@ import {
   Calendar,
   Shield,
   Target,
-  Mic,
   Settings,
   LogOut
 } from 'lucide-react';
@@ -29,7 +28,6 @@ const navigationItems = [
   { id: 'commitments', icon: Calendar, label: 'Commitments' },
   { id: 'insurance', icon: Shield, label: 'Insurance' },
   { id: 'goals', icon: Target, label: 'AI Jar' },
-  { id: 'voice', icon: Mic, label: 'Voice Bot' },
 ];
 
 const Navigation: React.FC<NavigationProps> = ({ 
@@ -42,7 +40,22 @@ const Navigation: React.FC<NavigationProps> = ({
       {/* Logo */}
       <div className="flex items-center justify-center h-20 border-b border-glass-border">
         <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg">
-          <span className="text-white font-bold text-lg">$</span>
+          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* Globe */}
+            <circle cx="16" cy="16" r="10" fill="none" stroke="#FFFFFF" strokeWidth="1.5"/>
+            
+            {/* Continents */}
+            <path d="M10 12 Q12 11 14 12 Q13 14 11 13 Z" fill="#FFFFFF" opacity="0.9"/>
+            <path d="M18 10 Q21 9 23 12 Q21 13 19 12 Q17 11 18 10 Z" fill="#FFFFFF" opacity="0.8"/>
+            <path d="M13 18 Q16 17 17 20 Q15 21 13 20 Q12 19 13 18 Z" fill="#FFFFFF" opacity="0.9"/>
+            
+            {/* Grid Lines */}
+            <path d="M6 16 Q16 14 26 16" stroke="#FFFFFF" strokeWidth="0.5" opacity="0.4" fill="none"/>
+            <ellipse cx="16" cy="16" rx="10" ry="5" fill="none" stroke="#FFFFFF" strokeWidth="0.5" opacity="0.3"/>
+            
+            {/* Growth Arrow */}
+            <path d="M22 10 L25 7 L24 6 L27 6 L27 9 L26 8 L23 11 Z" fill="#10B981"/>
+          </svg>
         </div>
       </div>
 

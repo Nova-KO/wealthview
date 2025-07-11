@@ -1,0 +1,75 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="32" cy="32" r="30" fill="url(#gradient1)"/>
+  
+  <!-- Globe Base -->
+  <circle cx="32" cy="32" r="20" fill="none" stroke="url(#globeStroke)" stroke-width="1.5"/>
+  
+  <!-- Continents/Landmasses -->
+  <!-- North America -->
+  <path d="M20 24 Q22 22 25 23 Q28 22 30 25 Q28 28 25 27 Q22 28 20 26 Z" fill="url(#landGradient)" opacity="0.9"/>
+  
+  <!-- Europe/Asia -->
+  <path d="M34 20 Q38 18 42 21 Q45 19 48 23 Q46 26 42 25 Q38 27 35 24 Q33 22 34 20 Z" fill="url(#landGradient)" opacity="0.8"/>
+  
+  <!-- South America/Africa -->
+  <path d="M26 35 Q30 33 33 36 Q35 39 32 42 Q29 44 26 41 Q24 38 26 35 Z" fill="url(#landGradient)" opacity="0.9"/>
+  
+  <!-- Australia/Asia -->
+  <path d="M38 38 Q42 36 44 39 Q46 41 43 43 Q40 44 38 42 Q37 40 38 38 Z" fill="url(#landGradient)" opacity="0.7"/>
+  
+  <!-- Grid Lines (Longitude/Latitude) -->
+  <path d="M12 32 Q32 28 52 32" stroke="url(#gridStroke)" stroke-width="1" opacity="0.4" fill="none"/>
+  <path d="M12 32 Q32 36 52 32" stroke="url(#gridStroke)" stroke-width="1" opacity="0.4" fill="none"/>
+  <ellipse cx="32" cy="32" rx="20" ry="10" fill="none" stroke="url(#gridStroke)" stroke-width="1" opacity="0.3"/>
+  <ellipse cx="32" cy="32" rx="14" ry="20" fill="none" stroke="url(#gridStroke)" stroke-width="1" opacity="0.3"/>
+  
+  <!-- Investment Growth Arrow -->
+  <path d="M44 20 L50 14 L48 12 L54 12 L54 18 L52 16 L46 22 Z" fill="url(#arrowGradient)"/>
+  
+  <!-- Currency Symbols (Small) -->
+  <circle cx="18" cy="18" r="4" fill="url(#currencyBg)" opacity="0.8"/>
+  <text x="18" y="21" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#FFFFFF">₹</text>
+  
+  <circle cx="46" cy="46" r="4" fill="url(#currencyBg)" opacity="0.8"/>
+  <text x="46" y="49" text-anchor="middle" font-family="Arial, sans-serif" font-size="6" font-weight="bold" fill="#FFFFFF">$</text>
+  
+  <defs>
+    <!-- Main Background Gradient -->
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0EA5E9;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#0284C7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0369A1;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Globe Stroke -->
+    <linearGradient id="globeStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#F0F9FF;stop-opacity:0.7" />
+    </linearGradient>
+    
+    <!-- Land Gradient -->
+    <linearGradient id="landGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F0F9FF;stop-opacity:0.8" />
+    </linearGradient>
+    
+    <!-- Grid Lines -->
+    <linearGradient id="gridStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#F0F9FF;stop-opacity:0.4" />
+    </linearGradient>
+    
+    <!-- Arrow Gradient -->
+    <linearGradient id="arrowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Currency Background -->
+    <linearGradient id="currencyBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg> 

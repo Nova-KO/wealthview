@@ -6,14 +6,15 @@ import { Progress } from '@/components/ui/progress';
 import { 
   TrendingUp, 
   TrendingDown, 
-  IndianRupee, 
+  Wallet, 
   Target, 
   CreditCard, 
   PiggyBank,
   AlertTriangle,
   CheckCircle,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  PieChart
 } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
@@ -45,14 +46,100 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
+      {/* Enhanced Welcome Header */}
       <div className="fade-in">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-          Welcome back, Rajesh! 👋
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Here's your financial overview for today
-        </p>
+        <Card className="widget mb-8 overflow-hidden relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-cyan-50 to-purple-50 opacity-60"></div>
+          <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-blue-400/10 to-cyan-400/10 rounded-full blur-3xl -translate-y-32 translate-x-32"></div>
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-purple-400/10 to-pink-400/10 rounded-full blur-3xl translate-y-24 -translate-x-24"></div>
+          
+          <CardContent className="p-8 relative z-10">
+            <div className="flex items-center justify-between">
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
+                    <span className="text-2xl font-bold text-white">A</span>
+                  </div>
+                  <div>
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-cyan-600 bg-clip-text text-transparent">
+                      Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, Anjali! 
+                      <span className="ml-2">
+                        {new Date().getHours() < 12 ? '🌅' : new Date().getHours() < 17 ? '☀️' : '🌙'}
+                      </span>
+                    </h1>
+                    <p className="text-lg text-muted-foreground mt-1">
+                      {new Date().toLocaleDateString('en-IN', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center space-x-6 mt-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium text-green-700">Portfolio growing strong</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                    <span className="text-sm font-medium text-blue-700">3 goals on track</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Target className="w-4 h-4 text-purple-500" />
+                    <span className="text-sm font-medium text-purple-700">₹2.4K savings this month</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="text-right space-y-2">
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">Net Worth</p>
+                  <p className="text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+                    ₹{(portfolioData.totalValue / 100000).toFixed(1)}L
+                  </p>
+                  <div className="flex items-center justify-end mt-1">
+                    <ArrowUpRight className="w-4 h-4 text-green-500 mr-1" />
+                    <span className="text-sm font-medium text-green-600">+₹15.2K today</span>
+                  </div>
+                </div>
+                
+                <div className="mt-4 p-3 bg-white/50 rounded-lg border border-white/20 backdrop-blur-sm">
+                  <p className="text-xs text-muted-foreground mb-1">Today's Financial Score</p>
+                  <div className="flex items-center space-x-2">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                      <span className="text-xs font-bold text-white">A+</span>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">Excellent</p>
+                      <p className="text-xs text-muted-foreground">Keep it up!</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Quick Action Bar */}
+            <div className="mt-6 pt-6 border-t border-white/20">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-muted-foreground">Quick Actions</p>
+                <div className="flex space-x-3">
+                  <Button size="sm" variant="outline" className="bg-white/50 border-white/30 hover:bg-white/70">
+                    💰 Add Income
+                  </Button>
+                  <Button size="sm" variant="outline" className="bg-white/50 border-white/30 hover:bg-white/70">
+                    📊 View Report
+                  </Button>
+                  <Button size="sm" variant="outline" className="bg-white/50 border-white/30 hover:bg-white/70">
+                    🎯 Set Goal
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Key Metrics Row */}
@@ -90,7 +177,7 @@ const Dashboard: React.FC = () => {
                 <p className="text-sm text-muted-foreground">of ₹{budgetData.budget.toLocaleString()}</p>
               </div>
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                <IndianRupee className="w-6 h-6 text-white" />
+                <Wallet className="w-6 h-6 text-white" />
               </div>
             </div>
           </CardContent>
@@ -133,7 +220,7 @@ const Dashboard: React.FC = () => {
         <Card className="widget">
           <CardHeader>
             <CardTitle className="flex items-center">
-              <IndianRupee className="w-5 h-5 mr-2 text-primary" />
+              <PieChart className="w-5 h-5 mr-2 text-primary" />
               Budget Overview
             </CardTitle>
             <CardDescription>Track your spending across categories</CardDescription>
