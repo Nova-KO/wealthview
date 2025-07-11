@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -39,6 +39,9 @@ const FloatingVoiceBot: React.FC = () => {
     data?: any;
     timestamp: Date;
   }>>([]);
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const conversationRef = useRef<HTMLDivElement>(null);
 
   // Demo financial data
   const demoData = {
@@ -284,6 +287,14 @@ const FloatingVoiceBot: React.FC = () => {
     setTimeout(() => setIsOpen(false), 300);
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [conversation, isProcessing]);
+
   return (
     <>
       {/* Floating Button */}
@@ -310,7 +321,7 @@ const FloatingVoiceBot: React.FC = () => {
           onClick={handleClose}
         >
           <Card 
-            className={`w-full lg:w-96 h-[80vh] lg:h-[500px] glass shadow-2xl flex flex-col transform transition-all duration-300 ease-out ${
+            className={`w-full lg:w-96 h-[80vh] lg:h-[500px] max-h-[600px] glass shadow-2xl flex flex-col transform transition-all duration-300 ease-out ${
               isAnimating 
                 ? 'translate-y-0 translate-x-0 scale-100 opacity-100' 
                 : 'translate-y-8 translate-x-4 lg:translate-x-8 scale-95 opacity-0'
@@ -339,9 +350,13 @@ const FloatingVoiceBot: React.FC = () => {
               </div>
             </CardHeader>
 
-            <CardContent className="flex-1 flex flex-col p-3 lg:p-4">
+            <CardContent className="flex-1 flex flex-col p-3 lg:p-4 min-h-0">
               {/* Conversation Area */}
-              <div className="flex-1 overflow-y-auto space-y-3 mb-4">
+              <div 
+                ref={conversationRef}
+                className="flex-1 overflow-y-auto overflow-x-hidden space-y-3 mb-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 min-h-0 max-h-full"
+                style={{ scrollbarWidth: 'thin' }}
+              >
                 {conversation.length === 0 && (
                   <div className="text-center text-muted-foreground py-6 lg:py-8 animate-in fade-in-50 duration-500">
                     <Volume2 className="w-6 h-6 lg:w-8 lg:h-8 mx-auto mb-2 opacity-50 animate-pulse" />
@@ -357,10 +372,10 @@ const FloatingVoiceBot: React.FC = () => {
                 {conversation.map((msg, index) => (
                   <div 
                     key={index} 
-                    className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300`}
+                    className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300 flex-shrink-0`}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className={`max-w-[85%] lg:max-w-[80%] p-2 lg:p-3 rounded-lg text-xs lg:text-sm transform transition-all duration-200 hover:scale-[1.02] ${
+                    <div className={`max-w-[85%] lg:max-w-[80%] p-2 lg:p-3 rounded-lg text-xs lg:text-sm transform transition-all duration-200 hover:scale-[1.02] break-words ${
                       msg.type === 'user' 
                         ? 'bg-blue-500 text-white shadow-lg' 
                         : 'bg-gray-100 text-gray-800 shadow-md'
@@ -384,10 +399,13 @@ const FloatingVoiceBot: React.FC = () => {
                     </div>
                   </div>
                 )}
+                
+                {/* Invisible element to scroll to */}
+                <div ref={messagesEndRef} />
               </div>
 
               {/* Voice Input Area */}
-              <div className="space-y-3 border-t pt-3">
+              <div className="space-y-3 border-t pt-3 flex-shrink-0">
                 <div className="flex items-center justify-center">
                   <Button
                     onClick={handleVoiceInput}
