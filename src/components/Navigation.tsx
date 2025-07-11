@@ -44,7 +44,9 @@ const Navigation: React.FC<NavigationProps> = ({
       {/* Mobile Navigation Toggle */}
       <button
         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className="fixed top-4 left-4 z-[60] lg:hidden w-12 h-12 rounded-xl glass border border-glass-border flex items-center justify-center"
+        className={`fixed top-4 z-[60] lg:hidden w-12 h-12 rounded-xl glass border border-glass-border flex items-center justify-center transition-all duration-300 ${
+          isMobileMenuOpen ? 'left-[268px] bg-red-500/10 border-red-300 text-red-600' : 'left-4 bg-white/80 border-gray-200'
+        }`}
       >
         {isMobileMenuOpen ? (
           <X className="w-6 h-6" />
@@ -62,11 +64,11 @@ const Navigation: React.FC<NavigationProps> = ({
       )}
 
       {/* Navigation Sidebar */}
-      <div className={`fixed left-0 top-0 h-full w-20 lg:w-20 glass border-r border-glass-border z-50 flex flex-col transition-transform duration-300 lg:translate-x-0 ${
+      <div className={`fixed left-0 top-0 h-full w-64 lg:w-20 glass border-r border-glass-border z-50 flex flex-col transition-all duration-300 lg:translate-x-0 ${
         isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
       {/* Logo */}
-      <div className="flex items-center justify-center h-20 border-b border-glass-border">
+      <div className="flex items-center justify-center lg:justify-center h-20 border-b border-glass-border px-4 lg:px-0">
         <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg">
           <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             {/* Globe */}
@@ -85,11 +87,17 @@ const Navigation: React.FC<NavigationProps> = ({
             <path d="M22 10 L25 7 L24 6 L27 6 L27 9 L26 8 L23 11 Z" fill="#10B981"/>
           </svg>
         </div>
+        <div className="ml-3 lg:hidden">
+          <h2 className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+            Shimmer AI
+          </h2>
+          <p className="text-xs text-muted-foreground">Financial Assistant</p>
+        </div>
       </div>
 
       {/* Navigation items */}
       <nav className="flex-1 py-6">
-        <div className="space-y-3 px-3">
+        <div className="space-y-2 px-3">
           {navigationItems.map((item) => (
             <button
               key={item.id}
@@ -97,15 +105,18 @@ const Navigation: React.FC<NavigationProps> = ({
                 onSectionChange(item.id);
                 setIsMobileMenuOpen(false);
               }}
-              className={`nav-icon group relative ${
-                activeSection === item.id ? 'active' : ''
-              }`}
+              className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 group relative ${
+                activeSection === item.id 
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' 
+                  : 'hover:bg-white/10 text-gray-700 hover:text-gray-900'
+              } lg:nav-icon lg:justify-center lg:space-x-0 lg:w-14 lg:h-14 lg:p-0`}
               title={item.label}
             >
-              <item.icon className="w-5 h-5" />
+              <item.icon className="w-5 h-5 flex-shrink-0" />
+              <span className="font-medium text-sm lg:hidden">{item.label}</span>
               
-              {/* Tooltip */}
-              <div className="absolute left-full ml-3 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
+              {/* Desktop Tooltip - only show on desktop */}
+              <div className="hidden lg:block absolute left-full ml-3 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
                 {item.label}
                 <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-black"></div>
               </div>
@@ -115,16 +126,21 @@ const Navigation: React.FC<NavigationProps> = ({
       </nav>
 
       {/* Bottom actions */}
-      <div className="p-3 border-t border-glass-border space-y-3">
+      <div className="p-3 border-t border-glass-border space-y-2">
         <button
           onClick={() => {
             onSectionChange('settings');
             setIsMobileMenuOpen(false);
           }}
-          className={`nav-icon ${activeSection === 'settings' ? 'active' : ''}`}
+          className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 ${
+            activeSection === 'settings' 
+              ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' 
+              : 'hover:bg-white/10 text-gray-700 hover:text-gray-900'
+          } lg:nav-icon lg:justify-center lg:space-x-0 lg:w-14 lg:h-14 lg:p-0`}
           title="Settings"
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-5 h-5 flex-shrink-0" />
+          <span className="font-medium text-sm lg:hidden">Settings</span>
         </button>
         
         <button
@@ -132,10 +148,11 @@ const Navigation: React.FC<NavigationProps> = ({
             onLogout();
             setIsMobileMenuOpen(false);
           }}
-          className="nav-icon hover:bg-red-500/20 hover:text-red-500"
+          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-500 text-gray-700 lg:nav-icon lg:justify-center lg:space-x-0 lg:w-14 lg:h-14 lg:p-0"
           title="Logout"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-5 h-5 flex-shrink-0" />
+          <span className="font-medium text-sm lg:hidden">Logout</span>
         </button>
       </div>
     </div>

@@ -56,14 +56,14 @@ const Dashboard: React.FC = () => {
           <CardContent className="p-4 lg:p-8 relative z-10">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-6 lg:space-y-0">
               <div className="space-y-4">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg">
-                    <span className="text-lg lg:text-2xl font-bold text-white">A</span>
+                <div className="flex items-center space-x-3 lg:space-x-4">
+                  <div className="w-14 h-14 lg:w-16 lg:h-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg flex-shrink-0">
+                    <span className="text-xl lg:text-2xl font-bold text-white">A</span>
                   </div>
-                  <div>
-                    <h1 className="text-2xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-cyan-600 bg-clip-text text-transparent">
+                  <div className="min-w-0 flex-1">
+                    <h1 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-cyan-600 bg-clip-text text-transparent leading-tight">
                       Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}, Anjali! 
-                      <span className="ml-2">
+                      <span className="ml-1 lg:ml-2 inline-block">
                         {new Date().getHours() < 12 ? '🌅' : new Date().getHours() < 17 ? '☀️' : '🌙'}
                       </span>
                     </h1>
@@ -78,30 +78,30 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-6 space-y-2 sm:space-y-0 mt-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 lg:space-x-6 space-y-2 sm:space-y-0 mt-4">
                   <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse flex-shrink-0"></div>
                     <span className="text-xs lg:text-sm font-medium text-green-700">Portfolio growing strong</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <CheckCircle className="w-3 h-3 lg:w-4 lg:h-4 text-blue-500" />
+                    <CheckCircle className="w-4 h-4 lg:w-4 lg:h-4 text-blue-500 flex-shrink-0" />
                     <span className="text-xs lg:text-sm font-medium text-blue-700">3 goals on track</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Target className="w-3 h-3 lg:w-4 lg:h-4 text-purple-500" />
+                    <Target className="w-4 h-4 lg:w-4 lg:h-4 text-purple-500 flex-shrink-0" />
                     <span className="text-xs lg:text-sm font-medium text-purple-700">₹2.4K savings this month</span>
                   </div>
                 </div>
               </div>
               
-              <div className="lg:text-right space-y-2">
+              <div className="lg:text-right space-y-2 flex-shrink-0">
                 <div className="lg:text-right">
                   <p className="text-sm text-muted-foreground">Net Worth</p>
                   <p className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
                     ₹{(portfolioData.totalValue / 100000).toFixed(1)}L
                   </p>
                   <div className="flex items-center lg:justify-end mt-1">
-                    <ArrowUpRight className="w-4 h-4 text-green-500 mr-1" />
+                    <ArrowUpRight className="w-4 h-4 text-green-500 mr-1 flex-shrink-0" />
                     <span className="text-sm font-medium text-green-600">+₹15.2K today</span>
                   </div>
                 </div>
@@ -109,7 +109,7 @@ const Dashboard: React.FC = () => {
                 <div className="mt-4 p-3 bg-white/50 rounded-lg border border-white/20 backdrop-blur-sm">
                   <p className="text-xs text-muted-foreground mb-1">Today's Financial Score</p>
                   <div className="flex items-center space-x-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center flex-shrink-0">
                       <span className="text-xs font-bold text-white">A+</span>
                     </div>
                     <div>
