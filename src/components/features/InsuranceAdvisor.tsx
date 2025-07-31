@@ -1,334 +1,379 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Shield,
-  Heart,
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  DollarSign,
-  Calendar,
-  Users,
-  FileText,
-  Star,
-  IndianRupee,
-  Clock,
-  Zap
-} from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { CheckCircle2, AlertTriangle, Info, Calendar, Heart, Home, Car, Plane, User, Shield, ArrowRight, ArrowLeft } from 'lucide-react';
 
-const InsuranceAdvisor: React.FC = () => {
-  const currentCoverage = {
-    healthInsurance: {
-      hasPolicy: true,
-      provider: 'Star Health',
-      coverage: 500000,
-      premium: 18500,
-      familyMembers: 4,
-      lastClaim: '2023-03-15',
-      renewalDate: '2024-08-20'
-    },
-    termInsurance: {
-      hasPolicy: true,
-      provider: 'LIC',
-      coverage: 10000000,
-      premium: 24000,
-      term: 25,
-      renewalDate: '2024-11-10'
-    },
-    vehicleInsurance: {
-      hasPolicy: true,
-      provider: 'ICICI Lombard',
-      coverage: 'Comprehensive',
-      premium: 12800,
-      renewalDate: '2024-05-15'
+const questions = [
+  {
+    id: 'age',
+    question: 'What is your age?',
+    type: 'number',
+    required: true
+  },
+  {
+    id: 'family',
+    question: 'How many family members do you have?',
+    type: 'number',
+    required: true
+  },
+  {
+    id: 'income',
+    question: 'What is your annual income range?',
+    type: 'select',
+    options: ['Under AED 100,000', 'AED 100,000 - 200,000', 'AED 200,000 - 500,000', 'Over AED 500,000'],
+    required: true
+  },
+  {
+    id: 'travelsPerYear',
+    question: 'How many times do you travel abroad per year?',
+    type: 'number',
+    required: true
+  },
+  {
+    id: 'ownsCar',
+    question: 'Do you own a car?',
+    type: 'select',
+    options: ['Yes', 'No'],
+    required: true
+  },
+  {
+    id: 'ownsHome',
+    question: 'Do you own a home?',
+    type: 'select',
+    options: ['Yes', 'No'],
+    required: true
+  },
+  {
+    id: 'hasExistingHealth',
+    question: 'Do you have existing health insurance?',
+    type: 'select',
+    options: ['Yes', 'No'],
+    required: true
+  },
+  {
+    id: 'hasExistingLife',
+    question: 'Do you have existing life insurance?',
+    type: 'select',
+    options: ['Yes', 'No'],
+    required: true
+  },
+  {
+    id: 'occupation',
+    question: 'What is your occupation?',
+    type: 'select',
+    options: ['Employee', 'Business Owner', 'Freelancer', 'Student', 'Retired'],
+    required: true
+  },
+  {
+    id: 'healthConditions',
+    question: 'Do you have any pre-existing health conditions?',
+    type: 'select',
+    options: ['None', 'Minor conditions', 'Major conditions'],
+    required: true
+  }
+];
+
+const InsuranceAdvisor = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, any>>({});
+  const [showRecommendations, setShowRecommendations] = useState(false);
+  const [selectedType, setSelectedType] = useState('Health');
+  const [quoteRequested, setQuoteRequested] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
+
+  const handleAnswer = (value: any) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questions[currentQuestion].id]: value
+    }));
+  };
+
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(prev => prev + 1);
+    } else {
+      setShowRecommendations(true);
     }
   };
 
-  const recommendations = [
-    {
-      type: 'health',
-      title: 'Increase Health Coverage',
-      priority: 'high',
-      description: 'Current ₹5L family floater may be insufficient for rising medical costs',
-      recommendation: 'Upgrade to ₹10L coverage or add super top-up',
-      expectedCost: 8500,
-      potentialSavings: 0,
-      impact: 'Reduce out-of-pocket medical expenses by ₹3-5L'
-    },
-    {
-      type: 'term',
-      title: 'Term Insurance Optimization',
-      priority: 'medium',
-      description: 'Current coverage is adequate but premium can be optimized',
-      recommendation: 'Compare with online term plans for better rates',
-      expectedCost: -3600,
-      potentialSavings: 3600,
-      impact: 'Save ₹3,600 annually with same coverage'
-    },
-    {
-      type: 'disability',
-      title: 'Add Disability Insurance',
-      priority: 'medium',
-      description: 'No disability coverage found - critical for income protection',
-      recommendation: 'Add disability rider or standalone policy',
-      expectedCost: 6000,
-      potentialSavings: 0,
-      impact: 'Protect 70% of income in case of disability'
-    }
-  ];
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'text-red-600 bg-red-50 border-red-200';
-      case 'medium': return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-      case 'low': return 'text-green-600 bg-green-50 border-green-200';
-      default: return 'text-gray-600 bg-gray-50 border-gray-200';
+  const prevQuestion = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(prev => prev - 1);
     }
   };
+
+  const resetQuestionnaire = () => {
+    setCurrentQuestion(0);
+    setAnswers({});
+    setShowRecommendations(false);
+    setSelectedType('Health');
+    setQuoteRequested(false);
+    setCompareOpen(false);
+  };
+
+  // Generate recommendations based on answers
+  const generateRecommendations = () => {
+    const profile = {
+      age: parseInt(answers.age) || 30,
+      family: parseInt(answers.family) || 1,
+      income: answers.income || 'AED 100,000 - 200,000',
+      travelsPerYear: parseInt(answers.travelsPerYear) || 0,
+      ownsCar: answers.ownsCar === 'Yes',
+      ownsHome: answers.ownsHome === 'Yes',
+      hasExistingHealth: answers.hasExistingHealth === 'Yes',
+      hasExistingLife: answers.hasExistingLife === 'Yes',
+      occupation: answers.occupation || 'Employee',
+      healthConditions: answers.healthConditions || 'None'
+    };
+
+    return [
+      {
+        type: 'Health',
+        icon: Heart,
+        recommended: !profile.hasExistingHealth || profile.healthConditions !== 'None',
+        advice: profile.hasExistingHealth 
+          ? 'You have existing health insurance. Consider upgrading for better coverage.'
+          : 'Health insurance is essential for you and your family. Consider a comprehensive plan.',
+        plans: [
+          { name: 'ADNIC Family Health', price: 4200, features: ['Maternity', 'Dental', 'UAE-wide'] },
+          { name: 'Daman Essential', price: 3200, features: ['Basic', 'UAE-wide'] },
+        ],
+      },
+      {
+        type: 'Life',
+        icon: User,
+        recommended: profile.family > 1 || profile.occupation === 'Business Owner',
+        advice: profile.family > 1 
+          ? 'Life insurance is crucial to protect your dependents. Consider a term plan.'
+          : 'Life insurance provides financial security for your loved ones.',
+        plans: [
+          { name: 'MetLife Term', price: 1800, features: ['Critical Illness', 'Flexible Term'] },
+          { name: 'Zurich Life', price: 2100, features: ['Whole Life', 'Global'] },
+        ],
+      },
+      {
+        type: 'Travel',
+        icon: Plane,
+        recommended: profile.travelsPerYear > 0,
+        advice: profile.travelsPerYear > 0
+          ? 'You travel frequently. Annual travel insurance is cost-effective.'
+          : 'Travel insurance is optional unless you have upcoming trips.',
+        plans: [
+          { name: 'AXA Annual Travel', price: 600, features: ['Multi-trip', 'Worldwide'] },
+          { name: 'Oman Insurance Single Trip', price: 120, features: ['Single Trip', 'UAE to Europe'] },
+        ],
+      },
+      {
+        type: 'Car',
+        icon: Car,
+        recommended: profile.ownsCar,
+        advice: profile.ownsCar
+          ? 'Car insurance is mandatory in the UAE. Consider comprehensive cover.'
+          : 'Car insurance is not needed unless you own a car.',
+        plans: [
+          { name: 'RSA Comprehensive', price: 2200, features: ['Comprehensive', 'Roadside Assistance'] },
+          { name: 'Orient TPL', price: 950, features: ['Third Party', 'Basic'] },
+        ],
+      },
+      {
+        type: 'Home',
+        icon: Home,
+        recommended: profile.ownsHome,
+        advice: profile.ownsHome
+          ? 'Home insurance protects your property and belongings.'
+          : 'Home insurance is not needed unless you own a home.',
+        plans: [
+          { name: 'AXA Home Secure', price: 1200, features: ['Contents', 'Fire', 'Theft'] },
+          { name: 'Oman Insurance Home', price: 950, features: ['Basic', 'Fire'] },
+        ],
+      },
+    ];
+  };
+
+  const insuranceOptions = showRecommendations ? generateRecommendations() : [];
+  const selected = insuranceOptions.find(opt => opt.type === selectedType);
+
+  if (!showRecommendations) {
+    const question = questions[currentQuestion];
+    const currentAnswer = answers[question.id];
+
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-color-primary">Insurance Advisor</h1>
+            <p className="text-gray-600 mt-1">Answer a few questions to get personalized recommendations</p>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div 
+            className="bg-emerald-600 h-2 rounded-full transition-all duration-300" 
+            style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+          ></div>
+        </div>
+        <div className="text-sm text-gray-600 text-center">
+          Question {currentQuestion + 1} of {questions.length}
+        </div>
+
+        {/* Question Card */}
+        <Card className="feature-card max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle className="text-xl">{question.question}</CardTitle>
+            <CardDescription>
+              {question.required && <span className="text-red-500">* Required</span>}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {question.type === 'number' && (
+              <div>
+                <Label htmlFor={question.id}>Your answer</Label>
+                <Input
+                  id={question.id}
+                  type="number"
+                  value={currentAnswer || ''}
+                  onChange={(e) => handleAnswer(e.target.value)}
+                  placeholder="Enter your answer"
+                  className="mt-1"
+                />
+              </div>
+            )}
+            
+            {question.type === 'select' && (
+              <div>
+                <Label htmlFor={question.id}>Select an option</Label>
+                <Select value={currentAnswer || ''} onValueChange={handleAnswer}>
+                  <SelectTrigger className="mt-1">
+                    <SelectValue placeholder="Choose an option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {question.options?.map(option => (
+                      <SelectItem key={option} value={option}>
+                        {option}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div className="flex justify-between pt-4">
+              <Button
+                variant="outline"
+                onClick={prevQuestion}
+                disabled={currentQuestion === 0}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Previous
+              </Button>
+              
+              <Button
+                className="button-finera-primary flex items-center gap-2"
+                onClick={nextQuestion}
+                disabled={!currentAnswer}
+              >
+                {currentQuestion === questions.length - 1 ? 'Get Recommendations' : 'Next'}
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <div className="fade-in">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-          Health Insurance Advisor
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Comprehensive insurance planning and optimization recommendations
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-color-primary">Insurance Advisor</h1>
+          <p className="text-gray-600 mt-1">Personalized recommendations based on your profile</p>
+        </div>
+        <Button variant="outline" onClick={resetQuestionnaire} className="flex items-center gap-2">
+          <ArrowLeft className="w-4 h-4" />
+          Retake Assessment
+        </Button>
       </div>
 
-      {/* Current Coverage Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 slide-up">
-        <Card className="widget">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Health Insurance</p>
-                <p className="text-2xl font-bold">₹{(currentCoverage.healthInsurance.coverage / 100000).toFixed(0)}L</p>
-                <p className="text-sm text-muted-foreground">{currentCoverage.healthInsurance.provider}</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                <Heart className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="widget">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Term Insurance</p>
-                <p className="text-2xl font-bold">₹{(currentCoverage.termInsurance.coverage / 10000000).toFixed(0)}Cr</p>
-                <p className="text-sm text-muted-foreground">{currentCoverage.termInsurance.provider}</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="widget">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Total Premium</p>
-                <p className="text-2xl font-bold">₹{((currentCoverage.healthInsurance.premium + currentCoverage.termInsurance.premium + currentCoverage.vehicleInsurance.premium) / 1000).toFixed(0)}K</p>
-                <p className="text-sm text-green-500">Annual cost</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-                <IndianRupee className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      {/* Insurance Type Tabs */}
+      <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg w-fit">
+        {insuranceOptions.map(opt => (
+          <button
+            key={opt.type}
+            onClick={() => { setSelectedType(opt.type); setQuoteRequested(false); setCompareOpen(false); }}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              selectedType === opt.type
+                ? 'bg-white text-emerald-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <opt.icon className="w-4 h-4 mr-1 inline" />
+            {opt.type}
+          </button>
+        ))}
       </div>
 
-      <Tabs defaultValue="recommendations" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="recommendations">AI Recommendations</TabsTrigger>
-          <TabsTrigger value="coverage">Coverage Analysis</TabsTrigger>
-          <TabsTrigger value="renewals">Policy Management</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="recommendations" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {recommendations.map((rec, index) => (
-              <Card key={index} className="widget">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{rec.title}</CardTitle>
-                    <Badge className={getPriorityColor(rec.priority)}>
-                      {rec.priority} priority
-                    </Badge>
-                  </div>
-                  <CardDescription>{rec.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
-                      <p className="text-sm font-medium text-blue-800">Recommendation:</p>
-                      <p className="text-sm text-blue-700">{rec.recommendation}</p>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Cost Impact</p>
-                        <p className={`font-semibold ${rec.expectedCost > 0 ? 'text-red-600' : 'text-green-600'}`}>
-                          {rec.expectedCost > 0 ? '+' : ''}₹{Math.abs(rec.expectedCost).toLocaleString()}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Annual Savings</p>
-                        <p className="font-semibold text-green-600">₹{rec.potentialSavings.toLocaleString()}</p>
-                      </div>
-                    </div>
-
-                    <div className="p-3 rounded-lg bg-green-50 border border-green-200">
-                      <p className="text-sm font-medium text-green-800">Impact:</p>
-                      <p className="text-sm text-green-700">{rec.impact}</p>
-                    </div>
-
-                    <Button variant="outline" className="w-full">
-                      Get Quote
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="coverage" className="space-y-6">
-          <Card className="widget">
-            <CardHeader>
-              <CardTitle>Coverage Gap Analysis</CardTitle>
-              <CardDescription>
-                Identified gaps in your current insurance coverage
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h4 className="font-semibold mb-1">Insufficient Health Coverage</h4>
-                      <p className="text-sm text-muted-foreground">Current ₹5L may not cover major procedures in tier-1 cities</p>
-                    </div>
-                    <Badge className="text-red-600 bg-red-50 border-red-200">
-                      High Impact
-                    </Badge>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                    <div>
-                      <p className="text-sm font-medium text-blue-800">Recommendation:</p>
-                      <p className="text-sm text-blue-700">Increase to ₹10L or add super top-up of ₹15L</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Estimated Cost</p>
-                      <p className="font-semibold">₹8,500/year</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-4 rounded-lg border border-gray-200">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h4 className="font-semibold mb-1">Missing Disability Insurance</h4>
-                      <p className="text-sm text-muted-foreground">No income protection in case of disability</p>
-                    </div>
-                    <Badge className="text-yellow-600 bg-yellow-50 border-yellow-200">
-                      Medium Impact
-                    </Badge>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                    <div>
-                      <p className="text-sm font-medium text-blue-800">Recommendation:</p>
-                      <p className="text-sm text-blue-700">Add disability income rider or standalone policy</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm text-muted-foreground">Estimated Cost</p>
-                      <p className="font-semibold">₹6,000/year</p>
-                    </div>
-                  </div>
-                </div>
+      {/* Recommendation Card */}
+      {selected && (
+        <Card className="feature-card max-w-xl mx-auto">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <selected.icon className="w-5 h-5 text-blue-600" />
+              {selected.type} Insurance
+              {selected.recommended ? (
+                <Badge className="ml-2" variant="secondary"><CheckCircle2 className="w-4 h-4 mr-1" /> Recommended</Badge>
+              ) : (
+                <Badge className="ml-2" variant="outline"><Info className="w-4 h-4 mr-1" /> Optional</Badge>
+              )}
+            </CardTitle>
+            <CardDescription>{selected.advice}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex gap-2">
+                <Button className="button-finera-primary" onClick={() => setQuoteRequested(true)}>
+                  Request Quote
+                </Button>
+                <Button variant="outline" onClick={() => setCompareOpen(v => !v)}>
+                  {compareOpen ? 'Hide Comparison' : 'Compare Plans'}
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="renewals" className="space-y-6">
-          <Card className="widget">
-            <CardHeader>
-              <CardTitle>Policy Renewal Optimization</CardTitle>
-              <CardDescription>
-                Upcoming renewals and optimization opportunities
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="p-4 rounded-lg border border-yellow-200 bg-yellow-50">
-                  <div className="flex items-center mb-3">
-                    <Calendar className="w-5 h-5 text-yellow-600 mr-2" />
-                    <h4 className="font-semibold text-yellow-800">Vehicle Insurance</h4>
-                  </div>
-                  <p className="text-sm text-yellow-700 mb-2">Renewal Due: May 15, 2024</p>
-                  <p className="text-xs text-yellow-600 mb-3">Current Premium: ₹12,800</p>
+              {quoteRequested && (
+                <div className="p-3 bg-green-50 rounded-lg border-l-4 border-green-500 mt-2 text-green-700">
+                  <CheckCircle2 className="w-4 h-4 mr-1 inline" /> Quote request submitted! Our advisor will contact you soon.
+                </div>
+              )}
+              {compareOpen && (
+                <div className="mt-4">
+                  <h4 className="font-semibold mb-2">Compare Plans</h4>
                   <div className="space-y-2">
-                    <p className="text-xs font-medium text-yellow-800">Optimization Tips:</p>
-                    <ul className="text-xs text-yellow-700 space-y-1">
-                      <li>• Compare NCB benefits</li>
-                      <li>• Consider add-on covers</li>
-                      <li>• Check for loyalty discounts</li>
-                    </ul>
+                    {selected.plans.map(plan => (
+                      <div key={plan.name} className="p-3 rounded-lg border border-gray-200 flex items-center justify-between">
+                        <div>
+                          <div className="font-medium">{plan.name}</div>
+                          <div className="text-xs text-gray-600">{plan.features.join(', ')}</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-bold text-blue-600">AED {plan.price}</div>
+                          <Button size="sm" className="ml-2 button-finera-primary" onClick={() => setQuoteRequested(true)}>
+                            Get Quote
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-                
-                <div className="p-4 rounded-lg border border-blue-200 bg-blue-50">
-                  <div className="flex items-center mb-3">
-                    <Heart className="w-5 h-5 text-blue-600 mr-2" />
-                    <h4 className="font-semibold text-blue-800">Health Insurance</h4>
-                  </div>
-                  <p className="text-sm text-blue-700 mb-2">Renewal Due: Aug 20, 2024</p>
-                  <p className="text-xs text-blue-600 mb-3">Current Premium: ₹18,500</p>
-                  <div className="space-y-2">
-                    <p className="text-xs font-medium text-blue-800">Optimization Tips:</p>
-                    <ul className="text-xs text-blue-700 space-y-1">
-                      <li>• Consider higher coverage</li>
-                      <li>• Add parents to policy</li>
-                      <li>• Compare with competitors</li>
-                    </ul>
-                  </div>
-                </div>
-                
-                <div className="p-4 rounded-lg border border-green-200 bg-green-50">
-                  <div className="flex items-center mb-3">
-                    <Shield className="w-5 h-5 text-green-600 mr-2" />
-                    <h4 className="font-semibold text-green-800">Term Insurance</h4>
-                  </div>
-                  <p className="text-sm text-green-700 mb-2">Renewal Due: Nov 10, 2024</p>
-                  <p className="text-xs text-green-600 mb-3">Current Premium: ₹24,000</p>
-                  <div className="space-y-2">
-                    <p className="text-xs font-medium text-green-800">Optimization Tips:</p>
-                    <ul className="text-xs text-green-700 space-y-1">
-                      <li>• Compare online term plans</li>
-                      <li>• Consider additional riders</li>
-                      <li>• Review coverage adequacy</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

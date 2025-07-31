@@ -1,162 +1,365 @@
 
-import React, { useState } from 'react';
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
 import { 
-  LayoutDashboard, 
-  TrendingUp, 
-  Wallet, 
-  PiggyBank, 
   CreditCard, 
-  Calendar,
-  Shield,
-  Target,
-  Settings,
-  LogOut,
+  Building2, 
+  TrendingUp, 
+  Shield, 
+  Banknote, 
+  Users, 
+  Settings, 
+  ChevronDown,
   Menu,
-  X
-} from 'lucide-react';
+  X,
+  ArrowRight,
+  Zap,
+  Globe,
+  BarChart3,
+  DollarSign,
+  Target,
+  PiggyBank
+} from "lucide-react";
 
-interface NavigationProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
-  onLogout: () => void;
-}
+const Navigation = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-const navigationItems = [
-  { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { id: 'portfolio', icon: TrendingUp, label: 'Portfolio' },
-  { id: 'budget', icon: Wallet, label: 'Budget' },
-  { id: 'savings', icon: PiggyBank, label: 'Savings Booster' },
-  { id: 'credit', icon: CreditCard, label: 'Credit Manager' },
-  { id: 'commitments', icon: Calendar, label: 'Commitments' },
-  { id: 'insurance', icon: Shield, label: 'Insurance' },
-  { id: 'goals', icon: Target, label: 'AI Jar' },
-];
+  const products = [
+    { 
+      name: "Wealth Management", 
+      href: "#", 
+      icon: DollarSign, 
+      description: "Smart Investment Portfolio",
+      badge: "Popular"
+    },
+    { 
+      name: "Islamic Banking", 
+      href: "#", 
+      icon: Building2, 
+      description: "Shariah-Compliant Solutions",
+      badge: "New"
+    },
+    { 
+      name: "Real Estate Investment", 
+      href: "#", 
+      icon: TrendingUp, 
+      description: "UAE Property Portfolio",
+      badge: "Featured"
+    },
+    { 
+      name: "Gold & Commodities", 
+      href: "#", 
+      icon: Banknote, 
+      description: "Precious Metals Trading"
+    },
+    { 
+      name: "Retirement Planning", 
+      href: "#", 
+      icon: Users, 
+      description: "Secure Financial Future"
+    },
+    { 
+      name: "Insurance Solutions", 
+      href: "#", 
+      icon: Shield, 
+      description: "Comprehensive Protection"
+    },
+  ];
 
-const Navigation: React.FC<NavigationProps> = ({ 
-  activeSection, 
-  onSectionChange, 
-  onLogout 
-}) => {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const services = [
+    { 
+      name: "Multi-Currency Accounts", 
+      href: "#", 
+      description: "Manage AED, USD, EUR & More",
+      icon: Globe
+    },
+    { 
+      name: "UAE Market Access", 
+      href: "#", 
+      description: "Direct Access to Local Markets",
+      icon: TrendingUp
+    },
+    { 
+      name: "Risk Management", 
+      href: "#", 
+      description: "Advanced Portfolio Protection",
+      icon: Shield
+    },
+    { 
+      name: "Smart Rebalancing", 
+      icon: Zap
+    },
+    { 
+      name: "Real-Time Analytics", 
+      href: "#", 
+      description: "Live Investment Performance",
+      icon: BarChart3
+    },
+    { 
+      name: "24/7 UAE Support", 
+      href: "#", 
+      description: "Local Expert Financial Advisors",
+      icon: Users
+    },
+  ];
+
+  const toggleDropdown = (dropdown: string) => {
+    setActiveDropdown(activeDropdown === dropdown ? null : dropdown);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setActiveDropdown(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Close mobile menu on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
-    <>
-      {/* Mobile Navigation Toggle */}
-      <button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        className={`fixed top-4 z-[60] lg:hidden w-12 h-12 rounded-xl glass border border-glass-border flex items-center justify-center transition-all duration-300 ${
-          isMobileMenuOpen ? 'left-[268px] bg-red-500/10 border-red-300 text-red-600' : 'left-4 bg-white/80 border-gray-200'
-        }`}
-      >
-        {isMobileMenuOpen ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <Menu className="w-6 h-6" />
-        )}
-      </button>
-
-      {/* Mobile Overlay */}
-      {isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
-      )}
-
-      {/* Navigation Sidebar */}
-      <div className={`fixed left-0 top-0 h-full w-64 lg:w-20 glass border-r border-glass-border z-50 flex flex-col transition-all duration-300 lg:translate-x-0 ${
-        isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
-      }`}>
-      {/* Logo */}
-      <div className="flex items-center justify-center lg:justify-center h-20 border-b border-glass-border px-4 lg:px-0">
-        <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center shadow-lg">
-          <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {/* Globe */}
-            <circle cx="16" cy="16" r="10" fill="none" stroke="#FFFFFF" strokeWidth="1.5"/>
-            
-            {/* Continents */}
-            <path d="M10 12 Q12 11 14 12 Q13 14 11 13 Z" fill="#FFFFFF" opacity="0.9"/>
-            <path d="M18 10 Q21 9 23 12 Q21 13 19 12 Q17 11 18 10 Z" fill="#FFFFFF" opacity="0.8"/>
-            <path d="M13 18 Q16 17 17 20 Q15 21 13 20 Q12 19 13 18 Z" fill="#FFFFFF" opacity="0.9"/>
-            
-            {/* Grid Lines */}
-            <path d="M6 16 Q16 14 26 16" stroke="#FFFFFF" strokeWidth="0.5" opacity="0.4" fill="none"/>
-            <ellipse cx="16" cy="16" rx="10" ry="5" fill="none" stroke="#FFFFFF" strokeWidth="0.5" opacity="0.3"/>
-            
-            {/* Growth Arrow */}
-            <path d="M22 10 L25 7 L24 6 L27 6 L27 9 L26 8 L23 11 Z" fill="#10B981"/>
-          </svg>
+    <nav className="navbar-finera" ref={dropdownRef}>
+      <div className="navbar-container">
+        {/* Logo */}
+        <div className="flex items-center">
+          <a href="/" className="flex items-center space-x-3 hover:opacity-80 transition-all duration-300 group">
+            <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+              <span className="text-white font-bold text-lg">W</span>
+            </div>
+            <span className="text-white font-semibold text-2xl tracking-tight">Wealthwise</span>
+          </a>
         </div>
-        <div className="ml-3 lg:hidden">
-          <h2 className="text-lg font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-            Shimmer AI
-          </h2>
-          <p className="text-xs text-muted-foreground">Financial Assistant</p>
-        </div>
-      </div>
 
-      {/* Navigation items */}
-      <nav className="flex-1 py-6">
-        <div className="space-y-2 px-3">
-          {navigationItems.map((item) => (
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center space-x-2">
+          {/* Products Dropdown */}
+          <div className="relative">
             <button
-              key={item.id}
-              onClick={() => {
-                onSectionChange(item.id);
-                setIsMobileMenuOpen(false);
-              }}
-              className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 group relative ${
-                activeSection === item.id 
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' 
-                  : 'hover:bg-white/10 text-gray-700 hover:text-gray-900'
-              } lg:nav-icon lg:justify-center lg:space-x-0 lg:w-14 lg:h-14 lg:p-0`}
-              title={item.label}
+              onClick={() => toggleDropdown('products')}
+              className={`flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300 py-3 px-4 rounded-lg hover:bg-white/10 ${
+                activeDropdown === 'products' ? 'text-white bg-white/10' : ''
+              }`}
             >
-              <item.icon className="w-5 h-5 flex-shrink-0" />
-              <span className="font-medium text-sm lg:hidden">{item.label}</span>
-              
-              {/* Desktop Tooltip - only show on desktop */}
-              <div className="hidden lg:block absolute left-full ml-3 px-3 py-2 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-50">
-                {item.label}
-                <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-black"></div>
-              </div>
+              <span className="font-medium">Products</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${
+                activeDropdown === 'products' ? 'rotate-180' : ''
+              }`} />
             </button>
-          ))}
-        </div>
-      </nav>
+            
+            {activeDropdown === 'products' && (
+              <div className="absolute top-full left-0 mt-2 w-[480px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 animate-fade-in">
+                <div className="p-8">
+                  <div className="grid grid-cols-2 gap-6">
+                    {products.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className="flex items-start space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-all duration-300 group"
+                      >
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <item.icon className="w-6 h-6 text-white" />
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center space-x-2">
+                            <div className="font-semibold text-gray-900 group-hover:text-purple-700 transition-colors">
+                              {item.name}
+                            </div>
+                            {item.badge && (
+                              <span className="px-2 py-1 text-xs font-medium bg-purple-100 text-purple-700 rounded-full">
+                                {item.badge}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-sm text-gray-600 mt-1">{item.description}</div>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-purple-600 group-hover:translate-x-1 transition-all duration-300" />
+                      </a>
+                    ))}
+                  </div>
+                  <div className="mt-6 pt-6 border-t border-gray-100">
+                    <a href="#" className="flex items-center justify-center space-x-2 text-purple-600 hover:text-purple-700 font-medium group">
+                      <span>View all products</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
-      {/* Bottom actions */}
-      <div className="p-3 border-t border-glass-border space-y-2">
-        <button
-          onClick={() => {
-            onSectionChange('settings');
-            setIsMobileMenuOpen(false);
-          }}
-          className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 ${
-            activeSection === 'settings' 
-              ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg' 
-              : 'hover:bg-white/10 text-gray-700 hover:text-gray-900'
-          } lg:nav-icon lg:justify-center lg:space-x-0 lg:w-14 lg:h-14 lg:p-0`}
-          title="Settings"
-        >
-          <Settings className="w-5 h-5 flex-shrink-0" />
-          <span className="font-medium text-sm lg:hidden">Settings</span>
-        </button>
-        
-        <button
-          onClick={() => {
-            onLogout();
-            setIsMobileMenuOpen(false);
-          }}
-          className="w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-200 hover:bg-red-500/20 hover:text-red-500 text-gray-700 lg:nav-icon lg:justify-center lg:space-x-0 lg:w-14 lg:h-14 lg:p-0"
-          title="Logout"
-        >
-          <LogOut className="w-5 h-5 flex-shrink-0" />
-          <span className="font-medium text-sm lg:hidden">Logout</span>
-        </button>
+          {/* Services Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => toggleDropdown('services')}
+              className={`flex items-center space-x-2 text-gray-300 hover:text-white transition-all duration-300 py-3 px-4 rounded-lg hover:bg-white/10 ${
+                activeDropdown === 'services' ? 'text-white bg-white/10' : ''
+              }`}
+            >
+              <span className="font-medium">Services</span>
+              <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${
+                activeDropdown === 'services' ? 'rotate-180' : ''
+              }`} />
+            </button>
+            
+            {activeDropdown === 'services' && (
+              <div className="absolute top-full left-0 mt-2 w-[480px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 animate-fade-in">
+                <div className="p-8">
+                  <div className="grid grid-cols-2 gap-6">
+                    {services.map((item) => (
+                      <a
+                        key={item.name}
+                        href={item.href}
+                        className="flex items-start space-x-4 p-4 rounded-xl hover:bg-gray-50 transition-all duration-300 group"
+                      >
+                        <div className="flex-shrink-0">
+                          <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                            <item.icon className="w-6 h-6 text-white" />
+                          </div>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-semibold text-gray-900 group-hover:text-blue-700 transition-colors">
+                            {item.name}
+                          </div>
+                          <div className="text-sm text-gray-600 mt-1">{item.description}</div>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-blue-600 group-hover:translate-x-1 transition-all duration-300" />
+                      </a>
+                    ))}
+                  </div>
+                  <div className="mt-6 pt-6 border-t border-gray-100">
+                    <a href="#" className="flex items-center justify-center space-x-2 text-blue-600 hover:text-blue-700 font-medium group">
+                      <span>Explore all services</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Regular Links */}
+          <a href="#" className="text-gray-300 hover:text-white transition-all duration-300 font-medium py-3 px-4 rounded-lg hover:bg-white/10">
+            About Us
+          </a>
+          <a href="#" className="text-gray-300 hover:text-white transition-all duration-300 font-medium py-3 px-4 rounded-lg hover:bg-white/10">
+            Blog
+          </a>
+          <a href="#" className="text-gray-300 hover:text-white transition-all duration-300 font-medium py-3 px-4 rounded-lg hover:bg-white/10">
+            Contact
+          </a>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Button 
+            variant="ghost" 
+            className="text-gray-300 hover:text-white hover:bg-white/10 border-none transition-all duration-300"
+          >
+            Sign In
+          </Button>
+          <Button className="button-finera-primary hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+            Start Investing
+            <ArrowRight className="ml-2 w-4 h-4" />
+          </Button>
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="text-white p-3 rounded-lg hover:bg-white/10 transition-all duration-300"
+          >
+            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
-    </div>
-    </>
+
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <div className="md:hidden bg-gray-900 border-t border-gray-700 animate-fade-in">
+          <div className="px-6 py-8 space-y-6">
+            <div className="space-y-4">
+              <div className="font-semibold text-white text-lg border-b border-gray-700 pb-2">Products</div>
+              <div className="grid grid-cols-1 gap-3">
+                {products.slice(0, 4).map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="flex items-center space-x-3 text-gray-300 hover:text-white transition-all duration-300 py-3 px-4 rounded-lg hover:bg-gray-800"
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.name}</span>
+                    {item.badge && (
+                      <span className="ml-auto px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
+                        {item.badge}
+                      </span>
+                    )}
+                  </a>
+                ))}
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="font-semibold text-white text-lg border-b border-gray-700 pb-2">Services</div>
+              <div className="grid grid-cols-1 gap-3">
+                {services.slice(0, 3).map((item) => (
+                  <a
+                    key={item.name}
+                    href={item.href}
+                    className="flex items-center space-x-3 text-gray-300 hover:text-white transition-all duration-300 py-3 px-4 rounded-lg hover:bg-gray-800"
+                  >
+                    <item.icon className="w-5 h-5" />
+                    <span className="font-medium">{item.name}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-3 pt-4 border-t border-gray-700">
+              <a href="#" className="block text-gray-300 hover:text-white transition-all duration-300 py-3 px-4 rounded-lg hover:bg-gray-800 font-medium">
+                About Us
+              </a>
+              <a href="#" className="block text-gray-300 hover:text-white transition-all duration-300 py-3 px-4 rounded-lg hover:bg-gray-800 font-medium">
+                Blog
+              </a>
+              <a href="#" className="block text-gray-300 hover:text-white transition-all duration-300 py-3 px-4 rounded-lg hover:bg-gray-800 font-medium">
+                Contact
+              </a>
+            </div>
+
+            <div className="space-y-3 pt-6">
+              <Button variant="ghost" className="w-full text-gray-300 hover:text-white justify-start py-3 hover:bg-gray-800">
+                Sign In
+              </Button>
+              <Button className="w-full button-finera-primary">
+                Start Investing
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+    </nav>
   );
 };
 

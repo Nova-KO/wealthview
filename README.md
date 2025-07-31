@@ -1,73 +1,139 @@
-# Welcome to your Lovable project
+# Wealthwise - UAE's Premier Financial AI Companion
 
-## Project info
+Wealthwise is a cutting-edge financial AI companion designed specifically for the UAE market, offering intelligent wealth management, investment strategies, and financial planning solutions.
 
-**URL**: https://lovable.dev/projects/39ece21a-52f3-470e-b25f-24faa35199d6
+## 🌟 Features
 
-## How can I edit this code?
+### Core Capabilities
+- **AI-Powered Investment Analysis**: Advanced algorithms for portfolio optimization
+- **UAE Market Expertise**: Specialized knowledge of local markets and regulations
+- **Islamic Banking Integration**: Shariah-compliant investment options
+- **Real Estate Investment**: Access to premium UAE property opportunities
+- **Multi-Currency Management**: Support for AED, USD, EUR, and other major currencies
+- **Risk Management**: Comprehensive portfolio protection strategies
 
-There are several ways of editing your application.
+### Smart Features
+- **Portfolio Tracking**: Real-time monitoring of investment performance
+- **Goal Planning**: Personalized financial goal setting and tracking
+- **Market Insights**: AI-driven market analysis and recommendations
+- **Automated Rebalancing**: Intelligent portfolio optimization
+- **Tax Optimization**: UAE-specific tax planning and optimization
 
-**Use Lovable**
+## 🚀 Getting Started
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/39ece21a-52f3-470e-b25f-24faa35199d6) and start prompting.
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Modern web browser
 
-Changes made via Lovable will be committed automatically to this repo.
+### Installation
 
-**Use your preferred IDE**
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/wealthwise.git
+   cd wealthwise
+   ```
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-Follow these steps:
+4. **Open your browser**
+   Navigate to `http://localhost:7766`
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🏗️ Project Structure
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+wealthwise/
+├── src/
+│   ├── components/          # React components
+│   │   ├── ui/             # Reusable UI components
+│   │   ├── features/       # Feature-specific components
+│   │   └── Navigation.tsx  # Main navigation
+│   ├── pages/              # Page components
+│   │   ├── Landing.tsx     # Landing page
+│   │   ├── Dashboard.tsx   # Main dashboard
+│   │   └── Index.tsx       # Home page
+│   ├── contexts/           # React contexts
+│   ├── hooks/              # Custom React hooks
+│   ├── lib/                # Utility functions
+│   └── main.tsx           # Application entry point
+├── public/                 # Static assets
+├── tailwind.config.ts     # Tailwind CSS configuration
+└── package.json           # Project dependencies
 ```
 
-**Edit a file directly in GitHub**
+## 🎨 Design System
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Wealthwise uses a modern design system built with:
+- **Tailwind CSS**: Utility-first CSS framework
+- **Shadcn/ui**: High-quality React components
+- **Finera UI Patterns**: Custom design system for financial applications
+- **Responsive Design**: Mobile-first approach
 
-**Use GitHub Codespaces**
+### Color Palette
+- **Primary**: Emerald (#10b981) and Blue (#3b82f6)
+- **Background**: White (#ffffff) and Light Gray (#f9fafb)
+- **Text**: Dark Gray (#1f2937) and Medium Gray (#6b7280)
+- **Accent**: Purple (#8b5cf6) for highlights
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 🔧 Configuration
 
-## What technologies are used for this project?
+### Environment Variables
+Create a `.env.local` file in the root directory:
 
-This project is built with:
+```env
+VITE_API_URL=your_api_url_here
+VITE_APP_NAME=Wealthwise
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Development
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run lint         # Run ESLint
+```
 
-## How can I deploy this project?
+## 📱 Browser Support
 
-Simply open [Lovable](https://lovable.dev/projects/39ece21a-52f3-470e-b25f-24faa35199d6) and click on Share -> Publish.
+- Chrome 90+
+- Firefox 88+
+- Safari 14+
+- Edge 90+
 
-## Can I connect a custom domain to my Lovable project?
+## 🤝 Contributing
 
-Yes, you can!
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📄 License
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+- 📧 Email: support@wealthwise.ae
+- 📞 Phone: +971 4 XXX XXXX
+- 🌐 Website: https://wealthwise.ae
+
+## 🙏 Acknowledgments
+
+- Built with React and Vite
+- UI components from Shadcn/ui
+- Icons from Lucide React
+- Design inspiration from modern fintech platforms
+
+---
+
+**Wealthwise** - Smart Investments, Wealth Growth. 🇦🇪

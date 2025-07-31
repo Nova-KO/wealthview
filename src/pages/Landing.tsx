@@ -1,413 +1,476 @@
-import React, { Suspense, useRef, useState, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, OrbitControls, Sphere, Box, Torus, Text3D, Center, Environment } from '@react-three/drei';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
-import {
-  DollarSign,
-  TrendingUp,
-  Shield,
-  Target,
+import { 
+  Brain, 
+  TrendingUp, 
+  Shield, 
+  Target, 
+  PiggyBank, 
+  CreditCard, 
+  BarChart3, 
   Zap,
   ArrowRight,
   CheckCircle,
   Star,
   Users,
-  BarChart3,
-  Brain,
-  Clock
+  Globe,
+  Smartphone,
+  Lock
 } from 'lucide-react';
-import * as THREE from 'three';
 
-// Error Boundary Component
-class Scene3DErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode },
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error: Error): { hasError: boolean } {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn('3D Scene Error:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-
-    return this.props.children;
-  }
-}
-
-// 3D Scene Components
-const FloatingCoin = ({ position }: { position: [number, number, number] }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    try {
-      if (meshRef.current) {
-        meshRef.current.rotation.y = state.clock.elapsedTime * 0.5;
-        meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.1;
-      }
-    } catch (error) {
-      console.warn('FloatingCoin animation error:', error);
-    }
-  });
-
+const Landing = () => {
   return (
-    <Float speed={2} rotationIntensity={1} floatIntensity={0.5}>
-      <mesh ref={meshRef} position={position}>
-        <cylinderGeometry args={[0.5, 0.5, 0.1, 32]} />
-        <meshStandardMaterial color="#ffd700" metalness={0.8} roughness={0.2} />
-      </mesh>
-    </Float>
-  );
-};
-
-const AnimatedSphere = ({ position, color }: { position: [number, number, number], color: string }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    try {
-      if (meshRef.current) {
-        meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime) * 0.2;
-        meshRef.current.rotation.x = state.clock.elapsedTime * 0.2;
-        meshRef.current.rotation.y = state.clock.elapsedTime * 0.3;
-      }
-    } catch (error) {
-      console.warn('AnimatedSphere animation error:', error);
-    }
-  });
-
-  return (
-    <mesh ref={meshRef} position={position}>
-      <sphereGeometry args={[0.3, 32, 32]} />
-      <meshStandardMaterial color={color} transparent opacity={0.8} />
-    </mesh>
-  );
-};
-
-const Scene3D = () => {
-  try {
-    return (
-      <>
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} />
-        
-        {/* Floating Elements */}
-        <FloatingCoin position={[-2, 1, 0]} />
-        <FloatingCoin position={[2, -1, 0]} />
-        <FloatingCoin position={[0, 2, -1]} />
-        
-        <AnimatedSphere position={[-3, 0, -1]} color="#22d3ee" />
-        <AnimatedSphere position={[3, 1, -1]} color="#3b82f6" />
-        <AnimatedSphere position={[0, -2, -1]} color="#8b5cf6" />
-        
-        {/* Central rotating torus */}
-        <Float speed={1} rotationIntensity={2}>
-          <Torus args={[1.5, 0.3, 16, 100]} position={[0, 0, -2]}>
-            <meshStandardMaterial color="#06b6d4" transparent opacity={0.6} />
-          </Torus>
-        </Float>
-        
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-      </>
-    );
-  } catch (error) {
-    console.warn('Scene3D render error:', error);
-    return (
-      <>
-        <ambientLight intensity={0.5} />
-        <mesh>
-          <sphereGeometry args={[1, 32, 32]} />
-          <meshBasicMaterial color="#06b6d4" transparent opacity={0.3} />
-        </mesh>
-      </>
-    );
-  }
-};
-
-const Landing: React.FC = () => {
-  const navigate = useNavigate();
-
-  const features = [
-    {
-      icon: <TrendingUp className="w-8 h-8" />,
-      title: "Portfolio Manager",
-      description: "Analyze and optimize your investment portfolio with AI-powered insights. Track stocks, mutual funds, and get rebalancing recommendations.",
-      status: "available"
-    },
-    {
-      icon: <DollarSign className="w-8 h-8" />,
-      title: "Budget Manager",
-      description: "Take control of your spending with intelligent budget tracking. Monitor expenses, set category limits, and get spending insights.",
-      status: "available"
-    },
-    {
-      icon: <BarChart3 className="w-8 h-8" />,
-      title: "Savings Booster",
-      description: "Maximize your savings potential with AI-driven cost optimization. Find duplicate subscriptions and money-saving opportunities.",
-      status: "available"
-    },
-    {
-      icon: <CheckCircle className="w-8 h-8" />,
-      title: "Credit Manager",
-      description: "Optimize your credit health with intelligent payment strategies. Monitor CIBIL score and get improvement recommendations.",
-      status: "coming-soon"
-    },
-    {
-      icon: <Shield className="w-8 h-8" />,
-      title: "Insurance Advisor",
-      description: "Find the perfect insurance coverage for your needs. Get personalized recommendations and policy comparisons.",
-      status: "coming-soon"
-    },
-    {
-      icon: <Target className="w-8 h-8" />,
-      title: "AI Jar (Goal Planning)",
-      description: "Achieve your financial dreams with intelligent goal planning. Set targets, track progress, and get step-by-step guidance.",
-      status: "coming-soon"
-    },
-    {
-      icon: <Brain className="w-8 h-8" />,
-      title: "Voice Bot Assistant",
-      description: "Access your financial information hands-free with voice commands. Get spoken insights and natural language queries.",
-      status: "coming-soon"
-    },
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Commitment Advisor",
-      description: "Make informed decisions about major financial commitments. Get timing recommendations and affordability analysis.",
-      status: "coming-soon"
-    }
-  ];
-
-  const stats = [
-    { value: "₹50L+", label: "Money Saved" },
-    { value: "10K+", label: "Happy Users" },
-    { value: "95%", label: "Success Rate" },
-    { value: "24/7", label: "AI Support" }
-  ];
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-cyan-100 overflow-hidden">
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center">
-        {/* 3D Background */}
-        <div className="absolute inset-0 z-0">
-          <Scene3DErrorBoundary 
-            fallback={
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-100/50 via-blue-100/50 to-purple-100/50">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.1)_0%,transparent_50%)]"></div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      {/* Navigation */}
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">W</span>
               </div>
-            }
-          >
-            <Canvas camera={{ position: [0, 0, 5], fov: 75 }} gl={{ antialias: true, alpha: true }}>
-              <Suspense fallback={
-                <mesh>
-                  <sphereGeometry args={[0.5, 32, 32]} />
-                  <meshBasicMaterial color="#06b6d4" transparent opacity={0.3} />
-                </mesh>
-              }>
-                <Scene3D />
-              </Suspense>
-            </Canvas>
-          </Scene3DErrorBoundary>
-        </div>
-
-        {/* Background decorations */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-cyan-400/20 to-blue-500/20 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-gradient-to-tr from-blue-400/20 to-cyan-500/20 rounded-full blur-3xl"></div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 text-center max-w-4xl mx-auto px-4 lg:px-6">
-          <Badge className="mb-4 lg:mb-6 bg-white/20 border-white/30 text-primary backdrop-blur-sm text-sm">
-            <Star className="w-3 h-3 lg:w-4 lg:h-4 mr-2" />
-            India's #1 AI Financial Assistant
-          </Badge>
-          
-          <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-            Your Money,
-            <br />
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Powered by AI
-            </span>
-          </h1>
-          
-          <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-muted-foreground mb-6 lg:mb-8 max-w-3xl mx-auto leading-relaxed">
-            Transform your financial future with intelligent insights, automated savings, 
-            and personalized investment strategies designed for Indian investors.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row gap-3 lg:gap-4 justify-center items-center mb-8 lg:mb-12">
-            <Button 
-              size="lg" 
-              className="w-full sm:w-auto text-base lg:text-lg px-6 lg:px-8 py-4 lg:py-6 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-              onClick={() => navigate('/app')}
-            >
-              Start Your Journey
-              <ArrowRight className="ml-2 w-4 h-4 lg:w-5 lg:h-5" />
-            </Button>
-            
-            <Button 
-              variant="outline" 
-              size="lg" 
-              className="w-full sm:w-auto text-base lg:text-lg px-6 lg:px-8 py-4 lg:py-6 bg-white/20 border-white/30 backdrop-blur-sm hover:bg-white/30 transition-all duration-300"
-            >
-              Watch Demo
-            </Button>
+              <span className="font-semibold text-gray-900 text-lg">Wealthwise</span>
+            </div>
+            <div className="hidden md:flex items-center space-x-8">
+              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">Features</a>
+              <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 transition-colors">How it Works</a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
+              <Link to="/login" className="text-gray-600 hover:text-gray-900 transition-colors">Login</Link>
+            </div>
+            <Link to="/login">
+              <Button className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white">
+                Get Started
+              </Button>
+            </Link>
           </div>
+        </div>
+      </nav>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-2xl mx-auto">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 lg:mb-2">{stat.value}</div>
-                <div className="text-xs lg:text-sm text-muted-foreground">{stat.label}</div>
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+          <div className="text-center">
+            <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200">
+              <Brain className="w-4 h-4 mr-2" />
+              AI-Powered Personal Finance
+            </Badge>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Your Financial Future,
+              <br />
+              <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                Intelligently Orchestrated
+              </span>
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              Step into a new era of personal finance with Wealthwise – the smart, secure AI companion designed to optimize your financial decisions and drive wealth growth.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link to="/login">
+                <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white px-8 py-3 text-lg">
+                  Start Your Journey
+                  <ArrowRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
+              <Button size="lg" variant="outline" className="px-8 py-3 text-lg">
+                Watch Demo
+              </Button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Hero Visual */}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-blue-400/20 rounded-3xl blur-3xl"></div>
+            <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-6">
+                    <TrendingUp className="w-8 h-8 text-emerald-600 mb-3" />
+                    <h3 className="font-semibold text-gray-900">Portfolio Growth</h3>
+                    <p className="text-sm text-gray-600">AI-optimized investment strategies</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6">
+                    <Shield className="w-8 h-8 text-blue-600 mb-3" />
+                    <h3 className="font-semibold text-gray-900">Smart Security</h3>
+                    <p className="text-sm text-gray-600">Advanced fraud protection</p>
+                  </div>
+                </div>
+                <div className="flex items-center justify-center">
+                  <div className="w-32 h-32 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
+                    <Brain className="w-16 h-16 text-white" />
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6">
+                    <Target className="w-8 h-8 text-purple-600 mb-3" />
+                    <h3 className="font-semibold text-gray-900">Goal Planning</h3>
+                    <p className="text-sm text-gray-600">Personalized financial goals</p>
+                  </div>
+                  <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6">
+                    <Zap className="w-8 h-8 text-pink-600 mb-3" />
+                    <h3 className="font-semibold text-gray-900">Instant Insights</h3>
+                    <p className="text-sm text-gray-600">Real-time financial analysis</p>
+                  </div>
+                </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-12 lg:py-20 px-4 lg:px-6 relative z-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 lg:mb-16">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 lg:mb-6 bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-              Complete Financial Management Suite
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200">
+              MEET WEALTHWISE
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              A Complete AI-Powered
+              <br />
+              <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                Financial Platform
+              </span>
             </h2>
-            <p className="text-base lg:text-xl text-muted-foreground max-w-3xl mx-auto mb-6 lg:mb-8">
-              Discover how AI can revolutionize your relationship with money
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Everything you need to manage, grow, and protect your wealth in one intelligent platform.
             </p>
-            
-            {/* Available Features Highlight */}
-            <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-2xl p-4 lg:p-6 mb-8 lg:mb-12 border border-green-200">
-              <div className="flex items-center justify-center mb-3 lg:mb-4">
-                <CheckCircle className="w-5 h-5 lg:w-6 lg:h-6 text-green-600 mr-2" />
-                <span className="text-base lg:text-lg font-semibold text-green-800">Now Available</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-emerald-50 to-emerald-100">
+              <CardHeader>
+                <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center mb-4">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">Portfolio Management</CardTitle>
+                <CardDescription>
+                  AI-driven investment strategies and real-time portfolio optimization.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-blue-50 to-blue-100">
+              <CardHeader>
+                <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center mb-4">
+                  <PiggyBank className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">Savings Booster</CardTitle>
+                <CardDescription>
+                  Smart savings strategies and automated goal tracking.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-purple-50 to-purple-100">
+              <CardHeader>
+                <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center mb-4">
+                  <CreditCard className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">Credit Management</CardTitle>
+                <CardDescription>
+                  Monitor and improve your credit score with AI insights.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-pink-50 to-pink-100">
+              <CardHeader>
+                <div className="w-12 h-12 bg-pink-500 rounded-xl flex items-center justify-center mb-4">
+                  <Target className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">Goal Planning</CardTitle>
+                <CardDescription>
+                  Personalized financial goals with AI-powered recommendations.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-orange-50 to-orange-100">
+              <CardHeader>
+                <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center mb-4">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">Budget Manager</CardTitle>
+                <CardDescription>
+                  Intelligent budgeting with spending insights and recommendations.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+
+            <Card className="group hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-indigo-50 to-indigo-100">
+              <CardHeader>
+                <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center mb-4">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <CardTitle className="text-xl">Insurance Advisor</CardTitle>
+                <CardDescription>
+                  AI-powered insurance recommendations and coverage analysis.
+                </CardDescription>
+              </CardHeader>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-700 border-emerald-200">
+              Simple Onboarding, Fast Results
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-6">
+              How to Get Started
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white font-bold text-xl">1</span>
               </div>
-              <p className="text-sm lg:text-base text-green-700">
-                <strong>Portfolio Manager, Budget Tracker & Savings Booster</strong> are live and ready to transform your finances!
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Sign Up & Connect</h3>
+              <p className="text-gray-600">
+                Create your account and securely connect your financial accounts in minutes.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white font-bold text-xl">2</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">AI Analysis</h3>
+              <p className="text-gray-600">
+                Our AI analyzes your financial situation and creates personalized recommendations.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <span className="text-white font-bold text-xl">3</span>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">Start Growing</h3>
+              <p className="text-gray-600">
+                Begin implementing AI-powered strategies to grow your wealth and achieve your goals.
               </p>
             </div>
           </div>
+        </div>
+      </section>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
-            {features.map((feature, index) => (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 bg-white/80 backdrop-blur-sm border-white/20 relative">
-                <CardHeader className="p-4 lg:p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 lg:w-16 lg:h-16 rounded-xl ${
-                      feature.status === 'available' 
-                        ? 'bg-gradient-to-br from-cyan-400 to-blue-600' 
-                        : 'bg-gradient-to-br from-gray-400 to-gray-600'
-                    } flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300`}>
-                      <div className="scale-75 lg:scale-100">
-                        {feature.icon}
-                      </div>
-                    </div>
-                    <Badge 
-                      variant={feature.status === 'available' ? 'default' : 'secondary'}
-                      className={feature.status === 'available' 
-                        ? 'bg-green-100 text-green-700 border-green-200' 
-                        : 'bg-orange-100 text-orange-700 border-orange-200'
-                      }
-                    >
-                      {feature.status === 'available' ? (
-                        <>
-                          <CheckCircle className="w-3 h-3 mr-1" />
-                          Available
-                        </>
-                      ) : (
-                        <>
-                          <Clock className="w-3 h-3 mr-1" />
-                          Coming Soon
-                        </>
-                      )}
-                    </Badge>
+      {/* Benefits Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 border-purple-200">
+                Your Ally in Financial Innovation
+              </Badge>
+              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+                Your Ally in
+                <br />
+                <span className="bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+                  Financial Innovation
+                </span>
+              </h2>
+              <p className="text-lg text-gray-600 mb-8">
+                Users worldwide trust Wealthwise for intelligent, reliable financial management solutions tailored to today's demands. Our innovative AI platform simplifies personal finance, supporting individuals of all backgrounds to operate efficiently and grow wealth with confidence.
+              </p>
+              <Link to="/login">
+                <Button className="bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white">
+                  Learn More
+                </Button>
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-4">
+                <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-6">
+                  <CheckCircle className="w-8 h-8 text-emerald-600 mb-3" />
+                  <h3 className="font-semibold text-gray-900">AI-Powered Insights</h3>
+                  <p className="text-sm text-gray-600">Get personalized financial advice</p>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6">
+                  <Lock className="w-8 h-8 text-blue-600 mb-3" />
+                  <h3 className="font-semibold text-gray-900">Bank-Level Security</h3>
+                  <p className="text-sm text-gray-600">Your data is always protected</p>
+                </div>
+              </div>
+              <div className="space-y-4 pt-8">
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6">
+                  <Globe className="w-8 h-8 text-purple-600 mb-3" />
+                  <h3 className="font-semibold text-gray-900">Global Access</h3>
+                  <p className="text-sm text-gray-600">Manage finances anywhere</p>
+                </div>
+                <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6">
+                  <Smartphone className="w-8 h-8 text-pink-600 mb-3" />
+                  <h3 className="font-semibold text-gray-900">Mobile First</h3>
+                  <p className="text-sm text-gray-600">Optimized for all devices</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-6">
+              Trusted by Users Worldwide
+            </h2>
+            <p className="text-xl text-gray-600">
+              See what our users say about their Wealthwise experience
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4">
+                  "Wealthwise has completely transformed how I manage my finances. The AI insights are incredibly accurate and have helped me save more than ever before."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white font-semibold">S</span>
                   </div>
-                  <CardTitle className="text-lg lg:text-xl mb-2">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="p-4 lg:p-6 pt-0">
-                  <CardDescription className="text-sm lg:text-base leading-relaxed">
-                    {feature.description}
-                  </CardDescription>
-                  {feature.status === 'available' && (
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="mt-4 w-full"
-                      onClick={() => navigate('/app')}
-                    >
-                      Try Now
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
+                  <div>
+                    <p className="font-semibold text-gray-900">Sarah Johnson</p>
+                    <p className="text-sm text-gray-600">Software Engineer</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4">
+                  "The portfolio management feature is amazing. It's like having a personal financial advisor available 24/7. My investments have never been better."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white font-semibold">M</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Michael Chen</p>
+                    <p className="text-sm text-gray-600">Entrepreneur</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-600 mb-4">
+                  "Finally, a financial app that actually understands my goals and helps me achieve them. The goal planning feature is a game-changer."
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mr-3">
+                    <span className="text-white font-semibold">E</span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">Emily Rodriguez</p>
+                    <p className="text-sm text-gray-600">Marketing Manager</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 relative z-10">
-        <div className="max-w-4xl mx-auto text-center">
-          <Card className="bg-gradient-to-r from-cyan-600 to-blue-600 text-white border-none shadow-2xl">
-            <CardContent className="p-12">
-              <h3 className="text-4xl font-bold mb-6">
-                Start Managing Your Money Smarter Today
-              </h3>
-              <p className="text-xl mb-6 opacity-90">
-                Get instant access to Portfolio Management, Budget Tracking, and Savings Optimization
-              </p>
-              
-              {/* Feature Pills */}
-              <div className="flex flex-wrap justify-center gap-3 mb-8">
-                <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm">
-                  <TrendingUp className="w-4 h-4 mr-2" />
-                  Track Investments
-                </Badge>
-                <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm">
-                  <DollarSign className="w-4 h-4 mr-2" />
-                  Monitor Budget
-                </Badge>
-                <Badge className="bg-white/20 text-white border-white/30 px-4 py-2 text-sm">
-                  <BarChart3 className="w-4 h-4 mr-2" />
-                  Boost Savings
-                </Badge>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  variant="secondary"
-                  className="text-lg px-8 py-6 bg-white text-primary hover:bg-gray-100"
-                  onClick={() => navigate('/app')}
-                >
-                  Start Free Trial
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </div>
-              
-              <p className="text-sm opacity-75 mt-4">
-                No credit card required • Full access to available features • More coming soon
-              </p>
-            </CardContent>
-          </Card>
+      <section className="py-20 bg-gradient-to-r from-emerald-600 to-blue-600">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
+            Simplify Finance,
+            <br />
+            Amplify Success
+          </h2>
+          <p className="text-xl text-emerald-100 mb-8 max-w-3xl mx-auto">
+            Let's make personal finance simpler, smarter, and stress-free. Partner with Wealthwise for innovative AI solutions designed to meet your unique financial needs.
+          </p>
+          <Link to="/login">
+            <Button size="lg" className="bg-white text-emerald-600 hover:bg-gray-100 px-8 py-3 text-lg">
+              Get Started Today
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="col-span-1 md:col-span-2">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
+                  <span className="text-white font-bold text-sm">W</span>
+                </div>
+                <span className="font-semibold text-lg">Wealthwise</span>
+              </div>
+              <p className="text-gray-400 mb-4">
+                Your financial future, intelligently orchestrated with AI-powered insights and personalized recommendations.
+              </p>
+              <div className="flex space-x-4">
+                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
+                  <Users className="w-5 h-5 text-gray-400" />
+                </div>
+                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-gray-400" />
+                </div>
+                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
+                  <Smartphone className="w-5 h-5 text-gray-400" />
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Features</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Portfolio Management</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Savings Booster</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Credit Management</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Goal Planning</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 Wealthwise. All rights reserved. Your financial future, intelligently orchestrated.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

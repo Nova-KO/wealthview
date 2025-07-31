@@ -7,10 +7,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Eye, EyeOff, DollarSign, Shield, TrendingUp } from 'lucide-react';
 
 interface AuthFormProps {
-  onLogin: (email: string, password: string) => void;
+  onSuccess: () => void;
 }
 
-const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
+const AuthForm: React.FC<AuthFormProps> = ({ onSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +24,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
     
     // Simulate authentication
     setTimeout(() => {
-      onLogin(email, password);
+      onSuccess();
       setLoading(false);
     }, 1000);
   };
@@ -40,13 +40,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
       <div className="w-full max-w-md relative z-10">
         {/* Logo and branding */}
         <div className="text-center mb-6 lg:mb-8 fade-in">
-          <div className="inline-flex items-center justify-center w-14 h-14 lg:w-16 lg:h-16 rounded-2xl gradient-primary mb-4 shadow-lg">
-            <DollarSign className="w-7 h-7 lg:w-8 lg:h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-14 h-14 lg:w-16 lg:h-16 rounded-2xl bg-gradient-to-r from-emerald-500 to-blue-500 mb-4 shadow-lg">
+            <span className="text-white font-bold text-xl lg:text-2xl">W</span>
           </div>
-          <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-            AI Money Companion
+          <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
+            Wealthwise
           </h1>
-          <p className="text-sm lg:text-base text-muted-foreground mt-2">Your intelligent financial assistant</p>
+          <p className="text-sm lg:text-base text-muted-foreground mt-2">UAE's Premier Financial AI Companion</p>
         </div>
 
         {/* Auth form */}
@@ -123,7 +123,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
 
               <Button 
                 type="submit" 
-                className="w-full gradient-primary text-white hover:scale-105 transition-all duration-300"
+                className="w-full button-finera-primary text-white hover:scale-105 transition-all duration-300"
                 disabled={loading}
               >
                 {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
@@ -133,8 +133,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
             <div className="mt-4 text-center">
               <Button
                 variant="outline"
-                onClick={() => onLogin('demo@demo.com', 'demo')}
-                className="w-full mb-4"
+                onClick={() => onSuccess()}
+                className="w-full mb-4 button-finera"
               >
                 Skip for now (Demo Mode)
               </Button>
@@ -158,15 +158,15 @@ const AuthForm: React.FC<AuthFormProps> = ({ onLogin }) => {
         {/* Features preview */}
         <div className="grid grid-cols-3 gap-2 lg:gap-4 mt-6 lg:mt-8 fade-in">
           <div className="glass-card text-center p-3 lg:p-4">
-            <Shield className="w-5 h-5 lg:w-6 lg:h-6 text-primary mx-auto mb-2" />
+            <Shield className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-600 mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">Secure & Encrypted</p>
           </div>
           <div className="glass-card text-center p-3 lg:p-4">
-            <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-primary mx-auto mb-2" />
+            <TrendingUp className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600 mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">Smart Analytics</p>
           </div>
           <div className="glass-card text-center p-3 lg:p-4">
-            <DollarSign className="w-5 h-5 lg:w-6 lg:h-6 text-primary mx-auto mb-2" />
+            <DollarSign className="w-5 h-5 lg:w-6 lg:h-6 text-emerald-600 mx-auto mb-2" />
             <p className="text-xs text-muted-foreground">AI Recommendations</p>
           </div>
         </div>

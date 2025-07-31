@@ -1,407 +1,692 @@
-import React, { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   PiggyBank,
   TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  Search,
-  IndianRupee,
-  Calendar,
-  Zap,
+  Calculator,
   Target,
-  ShoppingBag,
-  Smartphone,
-  Tv,
-  Car
+  Zap,
+  DollarSign,
+  Calendar,
+  Percent,
+  AlertCircle,
+  CheckCircle2,
+  Plus
 } from 'lucide-react';
 
-const SavingsBooster: React.FC = () => {
-  const savingsOverview = {
-    monthlySavings: 45000, // ₹45K
-    potentialSavings: 18500, // ₹18.5K additional possible
-    yearlyProjection: 540000, // ₹5.4L
-    savingsRate: 36 // 36%
+interface SavingsGoal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  deadline: string;
+  monthlyContribution: number;
+  category: string;
+}
+
+interface SavingsAccount {
+  id: string;
+  name: string;
+  balance: number;
+  interestRate: number;
+  type: string;
+  monthlyGrowth: number;
+}
+
+const SavingsBooster = () => {
+  const [selectedTab, setSelectedTab] = useState('overview');
+  const [newGoalName, setNewGoalName] = useState('');
+  const [newGoalAmount, setNewGoalAmount] = useState('');
+  const [newGoalDeadline, setNewGoalDeadline] = useState('');
+  const [calculatorAmount, setCalculatorAmount] = useState('10000');
+  const [calculatorRate, setCalculatorRate] = useState('3.5');
+  const [calculatorYears, setCalculatorYears] = useState('5');
+  const [goalLoading, setGoalLoading] = useState(false);
+  const [goalSuccess, setGoalSuccess] = useState('');
+  const [calcError, setCalcError] = useState('');
+  const [hoveredGoal, setHoveredGoal] = useState<string | null>(null);
+  const [hoveredAccount, setHoveredAccount] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Simulate initial loading
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Demo data
+  const [savingsGoals, setSavingsGoals] = useState<SavingsGoal[]>([
+    {
+      id: '1',
+      name: 'Emergency Fund',
+      targetAmount: 150000,
+      currentAmount: 75000,
+      deadline: '2024-12-31',
+      monthlyContribution: 5000,
+      category: 'Emergency'
+    },
+    {
+      id: '2',
+      name: 'Dubai Marina Apartment',
+      targetAmount: 500000,
+      currentAmount: 185000,
+      deadline: '2026-06-30',
+      monthlyContribution: 12000,
+      category: 'Real Estate'
+    },
+    {
+      id: '3',
+      name: 'Family Vacation',
+      targetAmount: 25000,
+      currentAmount: 18500,
+      deadline: '2024-07-15',
+      monthlyContribution: 2000,
+      category: 'Travel'
+    },
+    {
+      id: '4',
+      name: 'Investment Capital',
+      targetAmount: 200000,
+      currentAmount: 45000,
+      deadline: '2025-12-31',
+      monthlyContribution: 8000,
+      category: 'Investment'
+    }
+  ]);
+
+  const [savingsAccounts, setSavingsAccounts] = useState<SavingsAccount[]>([
+    {
+      id: '1',
+      name: 'ADCB High Yield Savings',
+      balance: 125000,
+      interestRate: 3.5,
+      type: 'High Yield',
+      monthlyGrowth: 365
+    },
+    {
+      id: '2',
+      name: 'Emirates NBD Islamic Savings',
+      balance: 85000,
+      interestRate: 2.8,
+      type: 'Islamic',
+      monthlyGrowth: 198
+    },
+    {
+      id: '3',
+      name: 'Mashreq Digital Savings',
+      balance: 45000,
+      interestRate: 4.2,
+      type: 'Digital',
+      monthlyGrowth: 157
+    }
+  ]);
+
+  const totalSavings = savingsAccounts.reduce((sum, account) => sum + account.balance, 0);
+  const totalMonthlyGrowth = savingsAccounts.reduce((sum, account) => sum + account.monthlyGrowth, 0);
+  const totalGoalAmount = savingsGoals.reduce((sum, goal) => sum + goal.targetAmount, 0);
+  const totalCurrentAmount = savingsGoals.reduce((sum, goal) => sum + goal.currentAmount, 0);
+
+  const addSavingsGoal = async () => {
+    if (!newGoalName || !newGoalAmount || !newGoalDeadline) {
+      setGoalSuccess('Please fill in all fields');
+      return;
+    }
+
+    setGoalLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const newGoal: SavingsGoal = {
+      id: Date.now().toString(),
+      name: newGoalName,
+      targetAmount: parseFloat(newGoalAmount),
+      currentAmount: 0,
+      deadline: newGoalDeadline,
+      monthlyContribution: parseFloat(newGoalAmount) / 12,
+      category: 'Custom'
+    };
+
+    setSavingsGoals(prev => [...prev, newGoal]);
+    setNewGoalName('');
+    setNewGoalAmount('');
+    setNewGoalDeadline('');
+    setGoalLoading(false);
+    setGoalSuccess('Goal added successfully! 🎉');
+    
+    setTimeout(() => setGoalSuccess(''), 3000);
   };
 
-  const duplicateSubscriptions = [
-    {
-      service: 'Music Streaming',
-      subscriptions: ['Spotify Premium', 'YouTube Music'],
-      monthlyCost: 358,
-      recommendation: 'Keep Spotify, cancel YouTube Music',
-      potentialSaving: 149
-    },
-    {
-      service: 'Cloud Storage',
-      subscriptions: ['Google Drive 200GB', 'iCloud 200GB'],
-      monthlyCost: 390,
-      recommendation: 'Consolidate to Google Drive only',
-      potentialSaving: 195
-    },
-    {
-      service: 'Food Delivery',
-      subscriptions: ['Swiggy One', 'Zomato Pro'],
-      monthlyCost: 398,
-      recommendation: 'Choose based on usage patterns',
-      potentialSaving: 199
+  const calculateCompoundInterest = () => {
+    const amount = parseFloat(calculatorAmount);
+    const rate = parseFloat(calculatorRate);
+    const years = parseFloat(calculatorYears);
+
+    if (isNaN(amount) || isNaN(rate) || isNaN(years) || amount <= 0 || rate <= 0 || years <= 0) {
+      return { result: 0, hasError: true };
     }
-  ];
 
-  const savingOpportunities = [
-    {
-      category: 'Subscriptions',
-      icon: <Smartphone className="w-5 h-5" />,
-      currentSpend: 2500,
-      potentialSaving: 800,
-      opportunities: [
-        { item: 'Unused Hotstar VIP', saving: 299, action: 'Cancel' },
-        { item: 'Multiple news apps', saving: 350, action: 'Consolidate' },
-        { item: 'Gym membership (unused)', saving: 1500, action: 'Cancel or use' }
-      ],
-      color: 'from-purple-400 to-purple-600'
-    },
-    {
-      category: 'Utilities',
-      icon: <Zap className="w-5 h-5" />,
-      currentSpend: 3200,
-      potentialSaving: 600,
-      opportunities: [
-        { item: 'Switch to LED bulbs', saving: 200, action: 'Upgrade' },
-        { item: 'Optimize AC usage', saving: 400, action: 'Schedule' }
-      ],
-      color: 'from-yellow-400 to-yellow-600'
-    },
-    {
-      category: 'Transportation',
-      icon: <Car className="w-5 h-5" />,
-      currentSpend: 8500,
-      potentialSaving: 2100,
-      opportunities: [
-        { item: 'Use metro instead of cab', saving: 1200, action: 'Plan routes' },
-        { item: 'Carpool for office', saving: 900, action: 'Find colleagues' }
-      ],
-      color: 'from-blue-400 to-blue-600'
-    },
-    {
-      category: 'Shopping',
-      icon: <ShoppingBag className="w-5 h-5" />,
-      currentSpend: 12000,
-      potentialSaving: 3500,
-      opportunities: [
-        { item: 'Buy groceries in bulk', saving: 1500, action: 'Plan weekly' },
-        { item: 'Use cashback credit cards', saving: 800, action: 'Switch cards' },
-        { item: 'Compare prices online', saving: 1200, action: 'Use apps' }
-      ],
-      color: 'from-green-400 to-green-600'
+    const result = amount * Math.pow(1 + rate / 100, years);
+    return { result, hasError: false };
+  };
+
+  const getGoalProgress = (goal: SavingsGoal) => {
+    return (goal.currentAmount / goal.targetAmount) * 100;
+  };
+
+  const getGoalStatus = (goal: SavingsGoal) => {
+    const progress = getGoalProgress(goal);
+    if (progress >= 100) return { status: 'Completed', color: 'bg-green-100 text-green-800' };
+    if (progress >= 75) return { status: 'On Track', color: 'bg-blue-100 text-blue-800' };
+    if (progress >= 50) return { status: 'Good Progress', color: 'bg-yellow-100 text-yellow-800' };
+    return { status: 'Getting Started', color: 'bg-gray-100 text-gray-800' };
+  };
+
+  const contributeTo = (goalId: string, amount: number) => {
+    setSavingsGoals(prev => prev.map(goal => 
+      goal.id === goalId 
+        ? { ...goal, currentAmount: Math.min(goal.currentAmount + amount, goal.targetAmount) }
+        : goal
+    ));
+  };
+
+  const compoundResult = useMemo(() => {
+    const result = calculateCompoundInterest();
+    if (result.hasError) {
+      setCalcError('Please enter valid positive numbers for all fields.');
+    } else {
+      setCalcError('');
     }
-  ];
+    return result;
+  }, [calculatorAmount, calculatorRate, calculatorYears]);
 
-  const alternativeServices = [
-    {
-      current: 'Netflix Premium',
-      currentCost: 649,
-      alternative: 'Netflix Basic + Regional OTT',
-      alternativeCost: 348,
-      savings: 301,
-      features: 'Similar content library with regional shows'
-    },
-    {
-      current: 'Uber/Ola Regular',
-      currentCost: 4500,
-      alternative: 'Metro + Occasional ride',
-      alternativeCost: 2200,
-      savings: 2300,
-      features: 'Faster commute during rush hours'
-    },
-    {
-      current: 'Branded groceries',
-      currentCost: 15000,
-      alternative: 'Local brands + bulk buying',
-      alternativeCost: 11000,
-      savings: 4000,
-      features: 'Same quality, better prices'
-    }
-  ];
+  const handleGoalHover = (goalId: string) => {
+    setHoveredGoal(goalId);
+  };
 
-  const savingsGoals = [
-    {
-      name: 'Emergency Fund',
-      target: 600000, // ₹6L
-      current: 420000, // ₹4.2L
-      monthlyContribution: 35000,
-      timeToGoal: 5, // months
-      progress: 70
-    },
-    {
-      name: 'Goa Vacation',
-      target: 150000, // ₹1.5L
-      current: 85000, // ₹85K
-      monthlyContribution: 15000,
-      timeToGoal: 4, // months
-      progress: 57
-    },
-    {
-      name: 'Car Down Payment',
-      target: 500000, // ₹5L
-      current: 180000, // ₹1.8L
-      monthlyContribution: 25000,
-      timeToGoal: 13, // months
-      progress: 36
-    }
-  ];
+  const handleAccountHover = (accountId: string) => {
+    setHoveredAccount(accountId);
+  };
 
-  return (
-    <div className="space-y-6">
-      <div className="fade-in">
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-          Personal Savings Booster
-        </h1>
-        <p className="text-muted-foreground mt-2">
-          Maximize your savings potential with AI-driven cost optimization
-        </p>
-      </div>
-
-      {/* Savings Overview */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 slide-up">
-        <Card className="widget">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Monthly Savings</p>
-                <p className="text-2xl font-bold">₹{(savingsOverview.monthlySavings / 1000).toFixed(0)}K</p>
-                <p className="text-sm text-green-500">{savingsOverview.savingsRate}% of income</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                <PiggyBank className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="widget">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Potential Savings</p>
-                <p className="text-2xl font-bold text-orange-600">₹{(savingsOverview.potentialSavings / 1000).toFixed(1)}K</p>
-                <p className="text-sm text-muted-foreground">Additional monthly</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                <Target className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="widget">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Yearly Projection</p>
-                <p className="text-2xl font-bold">₹{(savingsOverview.yearlyProjection / 100000).toFixed(1)}L</p>
-                <div className="flex items-center mt-1">
-                  <TrendingUp className="w-4 h-4 text-green-500 mr-1" />
-                  <span className="text-sm text-green-500">On track</span>
-                </div>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="widget">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Optimization Score</p>
-                <p className="text-2xl font-bold">8.2</p>
-                <p className="text-sm text-green-500">Very Good</p>
-              </div>
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-                <CheckCircle className="w-6 h-6 text-white" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Tabs defaultValue="opportunities" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="opportunities">Opportunities</TabsTrigger>
-          <TabsTrigger value="duplicates">Duplicates</TabsTrigger>
-          <TabsTrigger value="alternatives">Alternatives</TabsTrigger>
-          <TabsTrigger value="goals">Goals</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="opportunities" className="space-y-4">
-          <div className="grid gap-4">
-            {savingOpportunities.map((category, index) => (
-              <Card key={index} className="widget">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${category.color} flex items-center justify-center text-white`}>
-                        {category.icon}
-                      </div>
-                      <div>
-                        <CardTitle className="text-lg">{category.category}</CardTitle>
-                        <CardDescription>
-                          Spending ₹{category.currentSpend.toLocaleString()}/month • Save up to ₹{category.potentialSaving.toLocaleString()}
-                        </CardDescription>
-                      </div>
-                    </div>
-                    <Badge className="bg-green-100 text-green-700">
-                      ₹{category.potentialSaving.toLocaleString()} potential
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {category.opportunities.map((opportunity, oppIndex) => (
-                      <div key={oppIndex} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                        <div>
-                          <p className="font-medium">{opportunity.item}</p>
-                          <p className="text-sm text-muted-foreground">Save ₹{opportunity.saving}/month</p>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          {opportunity.action}
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-1/3 mb-6"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="h-32 bg-gray-200 rounded-lg"></div>
             ))}
           </div>
-        </TabsContent>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="h-96 bg-gray-200 rounded-lg"></div>
+            <div className="h-96 bg-gray-200 rounded-lg"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-        <TabsContent value="duplicates" className="space-y-4">
-          <Card className="widget">
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-color-primary">Savings Booster</h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">Maximize your savings with smart strategies</p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button 
+            onClick={() => setSelectedTab('calculator')}
+            className="button-finera text-sm sm:text-base"
+            variant="outline"
+          >
+            <Calculator className="w-4 h-4 mr-2" />
+            Calculator
+          </Button>
+          <Button 
+            onClick={() => setSelectedTab('add-goal')}
+            className="button-finera-primary text-sm sm:text-base"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            New Goal
+          </Button>
+        </div>
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+        <Card className="feature-card transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">Total Savings</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center">
+              <PiggyBank className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-600 mr-1 transition-transform duration-300 hover:scale-110" />
+              <span className="text-lg sm:text-2xl font-bold">AED {totalSavings.toLocaleString()}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="feature-card transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">Monthly Growth</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center">
+              <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mr-1 transition-transform duration-300 hover:scale-110" />
+              <span className="text-lg sm:text-2xl font-bold text-green-600">+AED {totalMonthlyGrowth.toLocaleString()}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="feature-card transition-all duration-300 hover:shadow-lg hover:scale-105 cursor-pointer">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">Goals Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center">
+              <Target className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mr-1 transition-transform duration-300 hover:scale-110" />
+              <span className="text-lg sm:text-2xl font-bold">
+                {((totalCurrentAmount / totalGoalAmount) * 100).toFixed(1)}%
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-gray-600">Overall completion</p>
+          </CardContent>
+        </Card>
+
+        <Card className="feature-card">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs sm:text-sm font-medium text-gray-600">Annual Yield</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center">
+              <Percent className="w-3 h-3 sm:w-4 sm:h-4 text-purple-600 mr-1" />
+              <span className="text-lg sm:text-2xl font-bold text-purple-600">3.5%</span>
+            </div>
+            <p className="text-xs sm:text-sm text-gray-600">Average rate</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tab Navigation */}
+      <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-lg w-fit">
+        {['overview', 'goals', 'accounts', 'calculator', 'add-goal'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setSelectedTab(tab)}
+            className={`px-2 sm:px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all ${
+              selectedTab === tab
+                ? 'bg-white text-emerald-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            {tab.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab Content */}
+      {selectedTab === 'overview' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <Card className="feature-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertTriangle className="w-5 h-5 text-orange-500" />
-                Duplicate Subscriptions Detected
-              </CardTitle>
-              <CardDescription>
-                You're paying for similar services multiple times
-              </CardDescription>
+              <CardTitle className="text-lg sm:text-xl">Savings Goals</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Track your financial objectives</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {duplicateSubscriptions.map((duplicate, index) => (
-                  <div key={index} className="border rounded-lg p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <h4 className="font-semibold">{duplicate.service}</h4>
-                      <Badge variant="destructive">₹{duplicate.potentialSaving}/month saving</Badge>
+                {savingsGoals.slice(0, 4).map((goal) => {
+                  const progress = getGoalProgress(goal);
+                  const status = getGoalStatus(goal);
+                  return (
+                    <div key={goal.id} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="font-medium text-sm sm:text-base">{goal.name}</span>
+                        <Badge variant="outline" className={`${status.color} text-xs sm:text-sm`}>
+                          <Target className="w-3 h-3 mr-1" />
+                          {status.status}
+                        </Badge>
+                      </div>
+                      <Progress value={Math.min(progress, 100)} className="h-2" />
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>AED {goal.currentAmount.toLocaleString()}</span>
+                        <span>AED {goal.targetAmount.toLocaleString()}</span>
+                      </div>
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      <p>Current subscriptions: {duplicate.subscriptions.join(', ')}</p>
-                      <p>Total cost: ₹{duplicate.monthlyCost}/month</p>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="feature-card transition-all duration-300 hover:shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">Savings Accounts</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Your earning accounts</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {savingsAccounts.map((account) => (
+                  <div 
+                    key={account.id} 
+                    className={`flex items-center justify-between p-3 bg-gray-50 rounded-lg transition-all duration-300 hover:bg-gray-100 hover:shadow-sm cursor-pointer ${
+                      hoveredAccount === account.id ? 'ring-2 ring-blue-200' : ''
+                    }`}
+                    onMouseEnter={() => handleAccountHover(account.id)}
+                    onMouseLeave={() => setHoveredAccount(null)}
+                  >
+                    <div>
+                      <p className="font-medium text-sm sm:text-base">{account.name}</p>
+                      <p className="text-xs sm:text-sm text-gray-600">{account.type} • {account.interestRate}% APY</p>
                     </div>
-                    <div className="flex items-center justify-between bg-green-50 p-3 rounded-lg">
-                      <p className="text-sm font-medium text-green-800">{duplicate.recommendation}</p>
-                      <Button size="sm" className="bg-green-600 hover:bg-green-700">
-                        Apply Fix
-                      </Button>
+                    <div className="text-right">
+                      <p className="font-semibold text-sm sm:text-base">AED {account.balance.toLocaleString()}</p>
+                      <p className="text-xs sm:text-sm text-green-600">+AED {account.monthlyGrowth}/mo</p>
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+      )}
 
-        <TabsContent value="alternatives" className="space-y-4">
-          <Card className="widget">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Search className="w-5 h-5 text-blue-500" />
-                Cost-Saving Alternatives
-              </CardTitle>
-              <CardDescription>
-                Better options for your current spending
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {alternativeServices.map((service, index) => (
-                  <div key={index} className="border rounded-lg p-4 space-y-3">
-                    <div className="grid md:grid-cols-2 gap-4">
-                      <div>
-                        <h5 className="font-medium text-red-600">Current</h5>
-                        <p className="text-sm">{service.current}</p>
-                        <p className="text-sm font-semibold">₹{service.currentCost}/month</p>
+      {selectedTab === 'goals' && (
+        <Card className="feature-card">
+          <CardHeader>
+            <CardTitle className="text-lg sm:text-xl">Savings Goals</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Manage and track your financial objectives</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+              {savingsGoals.map((goal) => {
+                const progress = getGoalProgress(goal);
+                const status = getGoalStatus(goal);
+                const daysLeft = Math.ceil((new Date(goal.deadline).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+                
+                return (
+                  <Card 
+                    key={goal.id} 
+                    className={`border-l-4 border-l-emerald-500 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] cursor-pointer ${
+                      hoveredGoal === goal.id ? 'ring-2 ring-emerald-200' : ''
+                    }`}
+                    onMouseEnter={() => handleGoalHover(goal.id)}
+                    onMouseLeave={() => setHoveredGoal(null)}
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-base sm:text-lg">{goal.name}</CardTitle>
+                        <Badge variant="outline" className="text-xs sm:text-sm">{goal.category}</Badge>
                       </div>
-                      <div>
-                        <h5 className="font-medium text-green-600">Alternative</h5>
-                        <p className="text-sm">{service.alternative}</p>
-                        <p className="text-sm font-semibold">₹{service.alternativeCost}/month</p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="flex justify-between">
+                          <span className="text-xs sm:text-sm text-gray-600">Progress</span>
+                          <span className="font-semibold text-sm sm:text-base">{progress.toFixed(1)}%</span>
+                        </div>
+                        <Progress value={Math.min(progress, 100)} className="h-3 progress-animate" />
+                        <div className="grid grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
+                          <div>
+                            <span className="text-gray-600">Current</span>
+                            <p className="font-semibold">AED {goal.currentAmount.toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Target</span>
+                            <p className="font-semibold">AED {goal.targetAmount.toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Deadline</span>
+                            <p className="font-semibold">{daysLeft} days</p>
+                          </div>
+                          <div>
+                            <span className="text-gray-600">Status</span>
+                            <Badge variant="outline" className={`${status.color} text-xs`}>
+                              {status.status}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => contributeTo(goal.id, 1000)}
+                            className="flex-1 text-xs sm:text-sm transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                          >
+                            <span className="group-hover:scale-110 transition-transform duration-200">+AED 1K</span>
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => contributeTo(goal.id, 5000)}
+                            className="flex-1 text-xs sm:text-sm transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                          >
+                            <span className="group-hover:scale-110 transition-transform duration-200">+AED 5K</span>
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            className="flex-1 button-finera-primary text-xs sm:text-sm transition-all duration-300 hover:scale-105 hover:shadow-md group"
+                            onClick={() => {
+                              const amount = prompt('Enter contribution amount (AED):');
+                              if (amount && !isNaN(parseFloat(amount))) {
+                                contributeTo(goal.id, parseFloat(amount));
+                              }
+                            }}
+                          >
+                            <span className="group-hover:scale-110 transition-transform duration-200">Custom</span>
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                    <div className="bg-blue-50 p-3 rounded-lg">
-                      <p className="text-sm text-blue-800">{service.features}</p>
-                      <div className="flex items-center justify-between mt-2">
-                        <p className="font-semibold text-green-600">Save ₹{service.savings}/month</p>
-                        <Button size="sm" variant="outline">
-                          Learn More
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {selectedTab === 'accounts' && (
+        <Card className="feature-card">
+          <CardHeader>
+            <CardTitle className="text-lg sm:text-xl">Savings Accounts</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Manage your earning accounts</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-3 px-2 text-xs sm:text-sm">Account</th>
+                    <th className="text-left py-3 px-2 text-xs sm:text-sm">Type</th>
+                    <th className="text-right py-3 px-2 text-xs sm:text-sm">Balance</th>
+                    <th className="text-right py-3 px-2 text-xs sm:text-sm">Interest Rate</th>
+                    <th className="text-right py-3 px-2 text-xs sm:text-sm">Monthly Growth</th>
+                    <th className="text-center py-3 px-2 text-xs sm:text-sm">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {savingsAccounts.map((account) => (
+                    <tr key={account.id} className="border-b hover:bg-gray-50">
+                      <td className="py-3 px-2 font-medium text-xs sm:text-sm">{account.name}</td>
+                      <td className="py-3 px-2">
+                        <Badge variant="outline" className="text-xs">{account.type}</Badge>
+                      </td>
+                      <td className="py-3 px-2 text-right font-semibold text-xs sm:text-sm">
+                        AED {account.balance.toLocaleString()}
+                      </td>
+                      <td className="py-3 px-2 text-right text-green-600 font-semibold text-xs sm:text-sm">
+                        {account.interestRate}%
+                      </td>
+                      <td className="py-3 px-2 text-right text-green-600 font-semibold text-xs sm:text-sm">
+                        +AED {account.monthlyGrowth}
+                      </td>
+                      <td className="py-3 px-2 text-center">
+                        <Button size="sm" variant="outline" className="text-xs">
+                          Manage
                         </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-        <TabsContent value="goals" className="space-y-4">
-          <Card className="widget">
+      {selectedTab === 'calculator' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <Card className="feature-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-500" />
-                Savings Goals Progress
+              <CardTitle className="flex items-center text-lg sm:text-xl">
+                <Calculator className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                Compound Interest Calculator
               </CardTitle>
-              <CardDescription>
-                Track your progress towards financial goals
-              </CardDescription>
+              <CardDescription className="text-sm sm:text-base">Calculate your savings growth potential</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-6">
-                {savingsGoals.map((goal, index) => (
-                  <div key={index} className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-semibold">{goal.name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          ₹{(goal.current / 1000).toFixed(0)}K of ₹{(goal.target / 1000).toFixed(0)}K
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold">{goal.progress}%</p>
-                        <p className="text-sm text-muted-foreground">{goal.timeToGoal} months left</p>
-                      </div>
-                    </div>
-                    <Progress value={goal.progress} className="h-3" />
-                    <div className="flex items-center justify-between text-sm">
-                      <span>Monthly: ₹{(goal.monthlyContribution / 1000).toFixed(0)}K</span>
-                      <Button variant="outline" size="sm">
-                        Boost Savings
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+              <div className="space-y-4">
+                <div>
+                  <label className="text-xs sm:text-sm font-medium">Initial Amount (AED)</label>
+                  <Input
+                    placeholder="Enter initial amount"
+                    value={calculatorAmount}
+                    onChange={(e) => setCalculatorAmount(e.target.value)}
+                    type="number"
+                    className="text-sm sm:text-base"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs sm:text-sm font-medium">Annual Interest Rate (%)</label>
+                  <Input
+                    placeholder="Enter interest rate"
+                    value={calculatorRate}
+                    onChange={(e) => setCalculatorRate(e.target.value)}
+                    type="number"
+                    step="0.1"
+                    className="text-sm sm:text-base"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs sm:text-sm font-medium">Time Period (Years)</label>
+                  <Input
+                    placeholder="Enter number of years"
+                    value={calculatorYears}
+                    onChange={(e) => setCalculatorYears(e.target.value)}
+                    type="number"
+                    className="text-sm sm:text-base"
+                  />
+                </div>
+                {calcError && <div className="text-red-600 text-xs sm:text-sm">{calcError}</div>}
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+
+          <Card className="feature-card">
+            <CardHeader>
+              <CardTitle className="text-lg sm:text-xl">Calculation Results</CardTitle>
+              <CardDescription className="text-sm sm:text-base">Your potential savings growth</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {calcError ? (
+                  <div className="text-red-600 text-xs sm:text-sm">{calcError}</div>
+                ) : (
+                  <>
+                    <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs sm:text-sm text-green-700">Final Amount</span>
+                        <span className="text-lg sm:text-2xl font-bold text-green-800">
+                          AED {compoundResult.result.toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs sm:text-sm text-blue-700">Total Interest Earned</span>
+                        <span className="text-base sm:text-xl font-bold text-blue-800">
+                          AED {(compoundResult.result - parseFloat(calculatorAmount)).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs sm:text-sm text-purple-700">Suggested Monthly Contribution</span>
+                        <span className="text-base sm:text-xl font-bold text-purple-800">
+                          AED {(parseFloat(calculatorAmount) * (parseFloat(calculatorRate) / 100) / 12).toLocaleString()}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-xs sm:text-sm text-gray-600">
+                      <p>
+                        By consistently saving and earning {calculatorRate}% annually, 
+                        your AED {parseFloat(calculatorAmount).toLocaleString()} will grow to 
+                        AED {compoundResult.result.toLocaleString()} in {calculatorYears} years.
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {selectedTab === 'add-goal' && (
+        <Card className="feature-card max-w-lg mx-auto">
+          <CardHeader>
+            <CardTitle className="text-lg sm:text-xl">Create New Savings Goal</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Set a new financial target to work towards</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs sm:text-sm font-medium">Goal Name</label>
+                <Input
+                  placeholder="e.g., New Car, Vacation, Emergency Fund"
+                  value={newGoalName}
+                  onChange={(e) => setNewGoalName(e.target.value)}
+                  className="text-sm sm:text-base"
+                />
+              </div>
+              <div>
+                <label className="text-xs sm:text-sm font-medium">Target Amount (AED)</label>
+                <Input
+                  placeholder="Enter target amount"
+                  value={newGoalAmount}
+                  onChange={(e) => setNewGoalAmount(e.target.value)}
+                  type="number"
+                  className="text-sm sm:text-base"
+                />
+              </div>
+              <div>
+                <label className="text-xs sm:text-sm font-medium">Target Date</label>
+                <Input
+                  type="date"
+                  value={newGoalDeadline}
+                  onChange={(e) => setNewGoalDeadline(e.target.value)}
+                  className="text-sm sm:text-base"
+                />
+              </div>
+              <Button 
+                onClick={addSavingsGoal}
+                className="w-full button-finera-primary text-sm sm:text-base"
+                disabled={!newGoalName || !newGoalAmount || !newGoalDeadline || goalLoading}
+              >
+                {goalLoading ? 'Creating...' : 'Create Savings Goal'}
+              </Button>
+              {goalSuccess && <div className="text-green-600 text-xs sm:text-sm text-center mt-2">{goalSuccess}</div>}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

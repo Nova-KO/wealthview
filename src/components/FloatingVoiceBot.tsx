@@ -24,7 +24,47 @@ interface VoiceQuery {
   query: string;
   response: string;
   type: 'portfolio' | 'budget' | 'credit' | 'goals' | 'general';
-  data?: any;
+  data?: PortfolioData | BudgetData | CreditData | GoalsData;
+}
+
+interface PortfolioData {
+  totalValue: number;
+  todayChange: number;
+  todayChangePercent: number;
+  topPerformer: string;
+  topPerformerGain: number;
+  allocation: {
+    equity: number;
+    debt: number;
+    gold: number;
+  };
+  holdings: Array<{
+    name: string;
+    value: number;
+    change: number;
+  }>;
+}
+
+interface BudgetData {
+  monthlyIncome: number;
+  monthlyExpenses: number;
+  savingsRate: number;
+  topExpenseCategory: string;
+  topExpenseAmount: number;
+}
+
+interface CreditData {
+  creditScore: number;
+  totalLimit: number;
+  utilization: number;
+  nextDueDate: string;
+}
+
+interface GoalsData {
+  totalGoals: number;
+  onTrack: number;
+  emergencyFund: number;
+  emergencyFundTarget: number;
 }
 
 const FloatingVoiceBot: React.FC = () => {
@@ -36,7 +76,7 @@ const FloatingVoiceBot: React.FC = () => {
   const [conversation, setConversation] = useState<Array<{
     type: 'user' | 'bot';
     message: string;
-    data?: any;
+    data?: PortfolioData | BudgetData | CreditData | GoalsData;
     timestamp: Date;
   }>>([]);
   
@@ -89,42 +129,42 @@ const FloatingVoiceBot: React.FC = () => {
     {
       id: '1',
       query: 'what is my current portfolio standing',
-      response: `Your portfolio is currently valued at ₹12.45 lakhs, up by ₹15,750 today (1.28%). Your top performer is HDFC Bank with 8.5% gains. Your allocation is 65% equity, 25% debt, and 10% gold.`,
+      response: `Your portfolio is currently valued at AED 135,000, up by AED 1,750 today (1.28%). Your top performer is Emirates NBD with 8.5% gains. Your allocation is 65% equity, 25% debt, and 10% gold.`,
       type: 'portfolio',
       data: demoData.portfolio
     },
     {
       id: '2',
       query: 'how is my portfolio performing',
-      response: `Your portfolio is performing well today with a gain of ₹15,750 (1.28%). HDFC Bank is your top performer with 8.5% gains, while Reliance is down 2.1%. Overall, you're maintaining a balanced allocation.`,
+      response: `Your portfolio is performing well today with a gain of AED 1,750 (1.28%). Emirates NBD is your top performer with 8.5% gains, while Emaar Properties is down 2.1%. Overall, you're maintaining a balanced allocation.`,
       type: 'portfolio',
       data: demoData.portfolio
     },
     {
       id: '3',
       query: 'what are my top holdings',
-      response: `Your top holdings are: HDFC Bank (₹2.85L, +8.5%), Reliance Industries (₹2.20L, -2.1%), ICICI Bank (₹1.85L, +4.2%), and SBI ETF Gold (₹1.25L, +0.8%).`,
+      response: `Your top holdings are: Emirates NBD (AED 31,000, +8.5%), Emaar Properties (AED 24,000, -2.1%), Abu Dhabi Commercial Bank (AED 20,000, +4.2%), and Dubai Gold ETF (AED 13,500, +0.8%).`,
       type: 'portfolio',
       data: demoData.portfolio
     },
     {
       id: '4',
       query: 'show me my budget summary',
-      response: `Your monthly income is ₹1.25 lakhs with expenses of ₹67,500, giving you a healthy 46% savings rate. Your top expense category is Food & Dining at ₹18,500.`,
+      response: `Your monthly income is AED 13,500 with expenses of AED 7,300, giving you a healthy 46% savings rate. Your top expense category is Food & Dining at AED 2,000.`,
       type: 'budget',
       data: demoData.budget
     },
     {
       id: '5',
       query: 'what is my credit score',
-      response: `Your credit score is 768, which is excellent. Your total credit limit is ₹3.5 lakhs with 28% utilization. Your next payment is due on 15th May 2024.`,
+      response: `Your credit score is 768, which is excellent. Your total credit limit is AED 38,000 with 28% utilization. Your next payment is due on 15th May 2024.`,
       type: 'credit',
       data: demoData.credit
     },
     {
       id: '6',
       query: 'how are my financial goals',
-      response: `You have 5 active financial goals with 4 on track. Your emergency fund is at ₹4.5 lakhs, which is 75% of your ₹6 lakh target.`,
+      response: `You have 5 active financial goals with 4 on track. Your emergency fund is at AED 49,000, which is 75% of your AED 65,000 target.`,
       type: 'goals',
       data: demoData.goals
     }
@@ -220,59 +260,69 @@ const FloatingVoiceBot: React.FC = () => {
     setTextInput('');
   };
 
-  const renderDataVisualization = (data: any, type: string) => {
+  const renderDataVisualization = (data: PortfolioData | BudgetData | CreditData | GoalsData, type: string) => {
     switch (type) {
       case 'portfolio':
-        return (
-          <div className="mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <span className="text-muted-foreground">Total Value:</span>
-                <p className="font-semibold">₹{(data.totalValue / 100000).toFixed(2)}L</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Today's Change:</span>
-                <p className="font-semibold text-green-600">+₹{(data.todayChange / 1000).toFixed(1)}K</p>
+        if ('totalValue' in data) {
+          return (
+            <div className="mt-3 p-3 rounded-lg bg-blue-50 border border-blue-200">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Total Value:</span>
+                  <p className="font-semibold">AED {(data.totalValue / 1000).toFixed(0)}K</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Today's Change:</span>
+                  <p className="font-semibold text-green-600">+AED {(data.todayChange / 1000).toFixed(1)}K</p>
+                </div>
               </div>
             </div>
-          </div>
-        );
+          );
+        }
+        break;
       
       case 'budget':
-        return (
-          <div className="mt-3 p-3 rounded-lg bg-green-50 border border-green-200">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <span className="text-muted-foreground">Savings Rate:</span>
-                <p className="font-semibold text-green-600">{data.savingsRate}%</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Monthly Save:</span>
-                <p className="font-semibold">₹{((data.monthlyIncome - data.monthlyExpenses) / 1000).toFixed(0)}K</p>
+        if ('savingsRate' in data) {
+          return (
+            <div className="mt-3 p-3 rounded-lg bg-green-50 border border-green-200">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Savings Rate:</span>
+                  <p className="font-semibold text-green-600">{data.savingsRate}%</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Monthly Save:</span>
+                  <p className="font-semibold">AED {((data.monthlyIncome - data.monthlyExpenses) / 1000).toFixed(0)}K</p>
+                </div>
               </div>
             </div>
-          </div>
-        );
+          );
+        }
+        break;
       
       case 'credit':
-        return (
-          <div className="mt-3 p-3 rounded-lg bg-purple-50 border border-purple-200">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <span className="text-muted-foreground">Credit Score:</span>
-                <p className="font-semibold text-purple-600">{data.creditScore}</p>
-              </div>
-              <div>
-                <span className="text-muted-foreground">Utilization:</span>
-                <p className="font-semibold">{data.utilization}%</p>
+        if ('creditScore' in data) {
+          return (
+            <div className="mt-3 p-3 rounded-lg bg-purple-50 border border-purple-200">
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Credit Score:</span>
+                  <p className="font-semibold text-purple-600">{data.creditScore}</p>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Utilization:</span>
+                  <p className="font-semibold">{data.utilization}%</p>
+                </div>
               </div>
             </div>
-          </div>
-        );
+          );
+        }
+        break;
       
       default:
         return null;
     }
+    return null;
   };
 
   const handleOpen = () => {
@@ -298,7 +348,7 @@ const FloatingVoiceBot: React.FC = () => {
   return (
     <>
       {/* Floating Button */}
-      <div className="fixed bottom-4 right-4 lg:bottom-6 lg:right-6 z-50">
+      <div className="fixed bottom-20 sm:bottom-4 right-4 lg:bottom-6 lg:right-6 z-50">
         <Button
           onClick={handleOpen}
           className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full shadow-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 transition-all duration-300 hover:scale-110 ${
@@ -315,13 +365,13 @@ const FloatingVoiceBot: React.FC = () => {
       {/* Voice Bot Modal */}
       {isOpen && (
         <div 
-          className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-end justify-end p-4 lg:p-6 transition-all duration-300 ${
+          className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-end justify-end p-2 sm:p-4 lg:p-6 transition-all duration-300 ${
             isAnimating ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={handleClose}
         >
           <Card 
-            className={`w-full lg:w-96 h-[80vh] lg:h-[500px] max-h-[600px] glass shadow-2xl flex flex-col transform transition-all duration-300 ease-out ${
+            className={`w-full max-w-sm sm:max-w-md lg:w-96 h-[75vh] sm:h-[80vh] lg:h-[500px] max-h-[600px] sm:max-h-[600px] glass shadow-2xl flex flex-col transform transition-all duration-300 ease-out ${
               isAnimating 
                 ? 'translate-y-0 translate-x-0 scale-100 opacity-100' 
                 : 'translate-y-8 translate-x-4 lg:translate-x-8 scale-95 opacity-0'
@@ -336,7 +386,7 @@ const FloatingVoiceBot: React.FC = () => {
                   </div>
                   <div>
                     <CardTitle className="text-base lg:text-lg">Voice Assistant</CardTitle>
-                    <CardDescription className="text-sm">Ask about your finances</CardDescription>
+                    <CardDescription className="text-xs sm:text-sm">Ask about your finances</CardDescription>
                   </div>
                 </div>
                 <Button
@@ -360,7 +410,7 @@ const FloatingVoiceBot: React.FC = () => {
                 {conversation.length === 0 && (
                   <div className="text-center text-muted-foreground py-6 lg:py-8 animate-in fade-in-50 duration-500">
                     <Volume2 className="w-6 h-6 lg:w-8 lg:h-8 mx-auto mb-2 opacity-50 animate-pulse" />
-                    <p className="text-sm mb-2">Try asking:</p>
+                    <p className="text-xs sm:text-sm mb-2">Try asking:</p>
                     <div className="mt-2 space-y-1 text-xs">
                       <p className="animate-in slide-in-from-bottom-2 duration-500" style={{animationDelay: '200ms'}}>"What is my portfolio standing?"</p>
                       <p className="animate-in slide-in-from-bottom-2 duration-500" style={{animationDelay: '400ms'}}>"Show me my budget summary"</p>
@@ -375,7 +425,7 @@ const FloatingVoiceBot: React.FC = () => {
                     className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} animate-in slide-in-from-bottom-2 duration-300 flex-shrink-0`}
                     style={{ animationDelay: `${index * 100}ms` }}
                   >
-                    <div className={`max-w-[85%] lg:max-w-[80%] p-2 lg:p-3 rounded-lg text-xs lg:text-sm transform transition-all duration-200 hover:scale-[1.02] break-words ${
+                    <div className={`max-w-[90%] sm:max-w-[85%] lg:max-w-[80%] p-2 lg:p-3 rounded-lg text-xs lg:text-sm transform transition-all duration-200 hover:scale-[1.02] break-words ${
                       msg.type === 'user' 
                         ? 'bg-blue-500 text-white shadow-lg' 
                         : 'bg-gray-100 text-gray-800 shadow-md'
@@ -410,14 +460,14 @@ const FloatingVoiceBot: React.FC = () => {
                   <Button
                     onClick={handleVoiceInput}
                     disabled={isProcessing}
-                    className={`w-10 h-10 lg:w-12 lg:h-12 rounded-full transition-all duration-300 transform hover:scale-110 active:scale-95 ${
+                    className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full transition-all duration-300 transform hover:scale-110 active:scale-95 ${
                       isListening 
                         ? 'bg-red-500 hover:bg-red-600 animate-pulse shadow-lg shadow-red-500/50' 
                         : 'bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 shadow-lg shadow-cyan-500/50'
                     }`}
                     size="icon"
                   >
-                    {isListening ? <MicOff className="w-4 h-4 lg:w-5 lg:h-5" /> : <Mic className="w-4 h-4 lg:w-5 lg:h-5" />}
+                    {isListening ? <MicOff className="w-5 h-5 lg:w-6 lg:h-6" /> : <Mic className="w-5 h-5 lg:w-6 lg:h-6" />}
                   </Button>
                 </div>
                 
@@ -427,7 +477,7 @@ const FloatingVoiceBot: React.FC = () => {
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleTextSubmit()}
-                    className="flex-1 text-sm transition-all duration-200 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 hover:border-gray-300"
+                    className="flex-1 text-xs sm:text-sm transition-all duration-200 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 hover:border-gray-300"
                   />
                   <Button
                     onClick={handleTextSubmit}
@@ -440,7 +490,7 @@ const FloatingVoiceBot: React.FC = () => {
                 </div>
                 
                 {isListening && (
-                  <div className="text-center text-sm text-muted-foreground animate-in slide-in-from-bottom-3 duration-300">
+                  <div className="text-center text-xs sm:text-sm text-muted-foreground animate-in slide-in-from-bottom-3 duration-300">
                     <div className="flex items-center justify-center space-x-1">
                       <div className="w-1 h-4 bg-cyan-500 rounded animate-pulse"></div>
                       <div className="w-1 h-6 bg-cyan-500 rounded animate-pulse" style={{animationDelay: '0.1s'}}></div>
