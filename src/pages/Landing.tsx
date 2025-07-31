@@ -71,9 +71,6 @@ const Landing = () => {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="px-8 py-3 text-lg">
-                Watch Demo
-              </Button>
             </div>
           </div>
         </div>
@@ -85,12 +82,12 @@ const Landing = () => {
             <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-2xl">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="space-y-4">
-                  <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-6">
+                  <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                     <TrendingUp className="w-8 h-8 text-emerald-600 mb-3" />
                     <h3 className="font-semibold text-gray-900">Portfolio Growth</h3>
                     <p className="text-sm text-gray-600">AI-optimized investment strategies</p>
                   </div>
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6">
+                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                     <Shield className="w-8 h-8 text-blue-600 mb-3" />
                     <h3 className="font-semibold text-gray-900">Smart Security</h3>
                     <p className="text-sm text-gray-600">Advanced fraud protection</p>
@@ -102,12 +99,12 @@ const Landing = () => {
                   </div>
                 </div>
                 <div className="space-y-4">
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6">
+                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                     <Target className="w-8 h-8 text-purple-600 mb-3" />
                     <h3 className="font-semibold text-gray-900">Goal Planning</h3>
                     <p className="text-sm text-gray-600">Personalized financial goals</p>
                   </div>
-                  <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6">
+                  <div className="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-6 transition-all duration-300 hover:scale-105 hover:shadow-lg">
                     <Zap className="w-8 h-8 text-pink-600 mb-3" />
                     <h3 className="font-semibold text-gray-900">Instant Insights</h3>
                     <p className="text-sm text-gray-600">Real-time financial analysis</p>
@@ -419,51 +416,17 @@ const Landing = () => {
       {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">W</span>
-                </div>
-                <span className="font-semibold text-lg">Wealthwise</span>
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+            <div className="flex items-center space-x-3 mb-4 md:mb-0">
+              <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-blue-500 rounded-full flex items-center justify-center">
+                <span className="text-white font-bold text-sm">W</span>
               </div>
-              <p className="text-gray-400 mb-4">
-                Your financial future, intelligently orchestrated with AI-powered insights and personalized recommendations.
-              </p>
-              <div className="flex space-x-4">
-                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
-                  <Users className="w-5 h-5 text-gray-400" />
-                </div>
-                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
-                  <Globe className="w-5 h-5 text-gray-400" />
-                </div>
-                <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center">
-                  <Smartphone className="w-5 h-5 text-gray-400" />
-                </div>
-              </div>
+              <span className="font-semibold text-lg">Wealthwise</span>
             </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Features</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Portfolio Management</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Savings Booster</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Credit Management</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Goal Planning</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              </ul>
-            </div>
+            <p className="text-gray-400 max-w-xl text-center md:text-left">
+              Your financial future, intelligently orchestrated with AI-powered insights and personalized recommendations.
+            </p>
           </div>
-          
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
             <p>&copy; 2024 Wealthwise. All rights reserved. Your financial future, intelligently orchestrated.</p>
           </div>
